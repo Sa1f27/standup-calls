@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentor Results | Educational Quiz App</title>
+  <style>
+    /* Global Styles */
+    :root {
+      --primary: #6C63FF;
+      --secondary: #4D44B5;
+      --tertiary: #FB7D5B;
+      --background: #0F1116;
+      --card-bg: #1E2130;
+      --text: #ffffff;
+      --text-secondary: #a8b1cf;
+      --success: #00C896;
+      --warning: #FFB648;
+      --border-radius: 10px;
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: var(--background);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0;
+      margin: 0;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(108, 99, 255, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(251, 125, 91, 0.1) 0%, transparent 20%);
+      background-size: 100% 100%;
+      background-position: center;
+    }
+    
+    .dashboard {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      background-color: rgba(20, 22, 36, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 30px 20px;
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .logo {
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    
+    .logo h2 {
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--tertiary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 0.5px;
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      margin-bottom: 8px;
+      border-radius: var(--border-radius);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(108, 99, 255, 0.2), transparent);
+      color: var(--text);
+      border-left: 3px solid var(--primary);
+    }
+    
+    .nav-item:hover:not(.active) {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+    }
+    
+    .nav-icon {
+      margin-right: 12px;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .user-info {
+      margin-top: auto;
+      padding: 15px;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .user-email {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+    }
+    
+    .user-role {
+      font-size: 12px;
+      padding: 4px 8px;
+      background-color: rgba(108, 99, 255, 0.2);
+      border-radius: 20px;
+      color: var(--primary);
+      display: inline-block;
+    }
+    
+    /* Main Content */
+    .main-content {
+      padding: 30px;
+      overflow-y: auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--tertiary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .batch-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      background-color: rgba(108, 99, 255, 0.15);
+      border-radius: 20px;
+      margin-bottom: 25px;
+    }
+    
+    .batch-badge .icon {
+      margin-right: 8px;
+      color: var(--primary);
+    }
+    
+    .results-container {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      margin-bottom: 30px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .results-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--tertiary));
+    }
+    
+    .no-data {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+    
+    .no-data-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+    
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: var(--border-radius);
+    }
+    
+    .results-table th {
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .results-table td {
+      padding: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+    
+    .results-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .results-table tr:hover td {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+    
+    .student-email {
+      font-weight: 500;
+      color: var(--text);
+    }
+    
+    .answers-cell {
+      max-width: 300px;
+    }
+    
+    pre {
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 10px;
+      border-radius: 8px;
+      overflow-x: auto;
+      max-height: 200px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: var(--text);
+      margin: 0;
+    }
+    
+    .ai-feedback {
+      max-width: 250px;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    
+    .date-cell {
+      white-space: nowrap;
+      font-size: 14px;
+    }
+    
+    .action-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 20px;
+      background-color: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .action-button::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: 0.6s;
+    }
+    
+    .action-button:hover {
+      background-color: rgba(108, 99, 255, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    .action-button:hover::after {
+      left: 100%;
+    }
+    
+    .action-button .icon {
+      margin-right: 8px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .results-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+    
+    @media (max-width: 991px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+      
+      .sidebar {
+        display: none;
+      }
+    }
+    
+    /* Decorative elements */
+    .decorative-circle {
+      position: fixed;
+      border-radius: 50%;
+      z-index: -1;
+      filter: blur(60px);
+    }
+    
+    .circle-1 {
+      width: 300px;
+      height: 300px;
+      background-color: rgba(108, 99, 255, 0.15);
+      top: -75px;
+      right: -75px;
+    }
+    
+    .circle-2 {
+      width: 200px;
+      height: 200px;
+      background-color: rgba(251, 125, 91, 0.15);
+      bottom: -50px;
+      left: -50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="decorative-circle circle-1"></div>
+  <div class="decorative-circle circle-2"></div>
+  
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <h2>Edu Quiz</h2>
+      </div>
+      
+
+      
+
+      
+      <div class="nav-item active">
+        <div class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        </div>
+        <span>Students Results</span>
+      </div>
+
+      
+
+      
+      <div class="user-info">
+        <div class="user-email">{{ user.email }}</div>
+        <div class="user-role">Mentor</div>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="header">
+        <h1>Student Results</h1>
+        <div id="currentDate"></div>
+      </div>
+      
+      {% if not batch %}
+      <div class="results-container">
+        <div class="no-data">
+          <div class="no-data-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          </div>
+          <h3>No batch specified</h3>
+          <p>Please go back and enter a batch to view results.</p>
+        </div>
+      </div>
+      {% else %}
+      <div class="batch-badge">
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+        </span>
+        <span>Results for batch: {{ batch }}</span>
+      </div>
+      
+      <div class="results-container">
+        {% if results_data %}
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Answers</th>
+              <th>AI Feedback</th>
+              <th>Submission Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in results_data %}
+            <tr>
+              <td class="student-email">{{ row.student_email }}</td>
+              <td class="answers-cell"><pre>{{ row.results }}</pre></td>
+              <td class="ai-feedback">{{ row.ai_feedback }}</td>
+              <td class="date-cell">{{ row.submission_date }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="no-data">
+          <div class="no-data-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          </div>
+          <h3>No results found</h3>
+          <p>There are no results available for this batch.</p>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+      
+      <a href="/mentor/dashboard?token={{ token }}" class="action-button">
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+        </span>
+        Back to Dashboard
+      </a>
+    </div>
+  </div>
+  
+  <script>
+    // Display current date
+    const dateElem = document.getElementById('currentDate');
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    dateElem.textContent = new Date().toLocaleDateString('en-US', options);
+  </script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome | Educational Quiz App</title>
+  <style>
+    /* Global Styles */
+    :root {
+      --primary: #6C63FF;
+      --secondary: #4D44B5;
+      --tertiary: #FB7D5B;
+      --background: #0F1116;
+      --card-bg: #1E2130;
+      --text: #ffffff;
+      --text-secondary: #a8b1cf;
+      --success: #00C896;
+      --border-radius: 10px;
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: var(--background);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(108, 99, 255, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(251, 125, 91, 0.1) 0%, transparent 20%);
+      background-size: 100% 100%;
+      background-position: center;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 450px;
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+    
+    .header {
+      padding: 30px 30px 20px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--tertiary));
+      border-radius: 3px;
+    }
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--tertiary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 0.5px;
+    }
+    
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .tab {
+      flex: 1;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      position: relative;
+    }
+    
+    .tab.active {
+      color: var(--text);
+    }
+    
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--tertiary));
+    }
+    
+    .form-container {
+      padding: 30px;
+    }
+    
+    .form {
+      display: none;
+    }
+    
+    .form.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 15px;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background-color: rgba(0, 0, 0, 0.2);
+      color: var(--text);
+      font-size: 16px;
+      transition: var(--transition);
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: var(--border-radius);
+      border: none;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 5px 15px rgba(77, 68, 181, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.6s;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(77, 68, 181, 0.4);
+    }
+    
+    .btn:hover::after {
+      left: 100%;
+    }
+    
+    .select-wrapper {
+      position: relative;
+    }
+    
+    .select-wrapper::after {
+      content: '▼';
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translateY(-50%);
+      color: var(--primary);
+      font-size: 12px;
+      pointer-events: none;
+    }
+    
+    select.form-control {
+      appearance: none;
+      cursor: pointer;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .decorative-circle {
+      position: absolute;
+      border-radius: 50%;
+      z-index: -1;
+      filter: blur(60px);
+    }
+    
+    .circle-1 {
+      width: 150px;
+      height: 150px;
+      background-color: rgba(108, 99, 255, 0.3);
+      top: -75px;
+      right: -75px;
+    }
+    
+    .circle-2 {
+      width: 100px;
+      height: 100px;
+      background-color: rgba(251, 125, 91, 0.3);
+      bottom: -50px;
+      left: -50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="decorative-circle circle-1"></div>
+    <div class="decorative-circle circle-2"></div>
+    
+    <div class="header">
+      <h1>Educational Quiz App</h1>
+      <p>Welcome to the next generation of learning</p>
+    </div>
+    
+    <div class="tabs">
+      <div id="loginTab" class="tab active" onclick="switchTab('login')">Login</div>
+      <div id="registerTab" class="tab" onclick="switchTab('register')">Register</div>
+    </div>
+    
+    <div class="form-container">
+      <!-- LOGIN FORM -->
+      <form id="loginForm" class="form active" action="/login" method="POST">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" name="email" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" name="password" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="loginRole">Role</label>
+          <div class="select-wrapper">
+            <select id="loginRole" name="role" class="form-control">
+              <option value="mentor">Mentor</option>
+              <option value="student">Student</option>
+            </select>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn">Login</button>
+      </form>
+      
+      <!-- REGISTRATION FORM -->
+      <form id="registerForm" class="form" action="/register" method="POST">
+        <div class="form-group">
+          <label for="registerEmail">Email</label>
+          <input type="email" id="registerEmail" name="email" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="registerPassword">Password</label>
+          <input type="password" id="registerPassword" name="password" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="registerRole">Role</label>
+          <div class="select-wrapper">
+            <select id="registerRole" name="role" class="form-control">
+              <option value="mentor">Mentor</option>
+              <option value="student">Student</option>
+            </select>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn">Register</button>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+    function switchTab(tab) {
+      // Update tab styles
+      document.getElementById('loginTab').classList.remove('active');
+      document.getElementById('registerTab').classList.remove('active');
+      document.getElementById(tab + 'Tab').classList.add('active');
+      
+      // Update form visibility
+      document.getElementById('loginForm').classList.remove('active');
+      document.getElementById('registerForm').classList.remove('active');
+      document.getElementById(tab + 'Form').classList.add('active');
+    }
+  </script>
+</body>
+</html>
