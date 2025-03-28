@@ -139,21 +139,39 @@
       font-weight: 600;
     }
     
-    .transcript-container {
-      background-color: rgba(0, 0, 0, 0.2);
-      border-radius: var(--border-radius);
-      padding: 15px;
-      margin-bottom: 30px;
-      max-height: 250px;
-      overflow-y: auto;
+    .name-form-container {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    margin: 20px auto;
+    text-align: center;
     }
-    
-    .transcript-container pre {
-      font-family: 'Consolas', 'Monaco', monospace;
-      font-size: 14px;
+
+    .name-form-container label {
+      font-size: 16px;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 8px;
       color: var(--text-secondary);
-      white-space: pre-wrap;
-      line-height: 1.5;
+    }
+
+    .name-form-container input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background-color: rgba(0, 0, 0, 0.2);
+      color: var(--text);
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .name-form-container input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 8px rgba(108, 99, 255, 0.5);
     }
     
     .quiz-container {
@@ -451,16 +469,14 @@
         <span>Batch: {{ batch }}</span>
       </div>
       
-      <!-- Transcript Card -->
-      <div class="card">
-        <div class="card-header">
-          <h2>Lecture Transcript</h2>
-        </div>
-        <div class="transcript-container">
-          <pre>{{ transcript }}</pre>
-        </div>
+      <div class="name-form-container">
+        <form id="nameForm">
+          <label for="userName">Your Name:</label>
+          <input type="text" id="userName" name="userName" required>
+          <button type="submit" class="submit-btn">Submit</button>
+        </form>
       </div>
-      
+
       {% if not submitted %}
       <!-- Quiz Card -->
       <div class="card">
@@ -471,6 +487,8 @@
           <input type="hidden" name="token" value="{{ token }}">
           <input type="hidden" name="batch" value="{{ batch }}">
           
+
+
           <div class="quiz-container">
             <ol class="question-list">
               {% for q in questions %}

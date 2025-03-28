@@ -143,6 +143,7 @@ def setup_database():
         BEGIN
             CREATE TABLE results (
                 id INT IDENTITY(1,1) PRIMARY KEY,
+                name VARCHAR(255),
                 student_email VARCHAR(255),
                 batch VARCHAR(255),
                 results TEXT,
@@ -501,6 +502,7 @@ async def post_quiz(
     request: Request,
     token: str = Form(...),
     batch: str = Form(...),
+    user_name: str = Form(...),
     answers: List[str] = Form(...)
 ):
     """
@@ -532,11 +534,11 @@ async def post_quiz(
 
     # Evaluate answers with Groq
     ai_feedback = evaluate_answers_with_groq(combined_answers, transcript_text)
-
+    num = 10
     # Save results
     try:
-        insert_query = "INSERT INTO results (student_email, batch, results, ai_feedback) VALUES (?, ?, ?, ?)"
-        cursor.execute(insert_query, (user["email"], batch, combined_answers, ai_feedback))
+        insert_query = "INSERT INTO results (name, student_email, batch, results, ai_feedback ) VALUES (?, ?, ?, ?, ?)"
+        cursor.execute(insert_query, (user_name, user["email"], batch, combined_answers, ai_feedback))
         conn.commit()
     except pyodbc.Error as e:
         cursor.close()
@@ -558,7 +560,9 @@ async def post_quiz(
         "questions": questions,
         "submitted": True,
         "results": {
+            "name": user_name,
             "answers": combined_answers,
             "ai_feedback": ai_feedback
         }
     })
+

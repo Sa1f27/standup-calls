@@ -226,6 +226,11 @@
       background-color: rgba(255, 255, 255, 0.03);
     }
     
+    .student-name {
+      font-weight: 500;
+      color: var(--text);
+
+    }
     .student-email {
       font-weight: 500;
       color: var(--text);
@@ -414,6 +419,7 @@
         <table class="results-table">
           <thead>
             <tr>
+              <th>Name</th>
               <th>Student</th>
               <th>Answers</th>
               <th>AI Feedback</th>
@@ -423,6 +429,7 @@
           <tbody>
             {% for row in results_data %}
             <tr>
+              <td class="student-name"> {{ row.student_name }}</td>
               <td class="student-email">{{ row.student_email }}</td>
               <td class="answers-cell"><pre>{{ row.results }}</pre></td>
               <td class="ai-feedback">{{ row.ai_feedback }}</td>
