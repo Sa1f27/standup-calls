@@ -415,7 +415,7 @@ async def mentor_view_results(
         conn = get_db_connection()
         cursor = conn.cursor()
         try:
-            query = "SELECT student_email, results, ai_feedback, submission_date FROM results WHERE batch = ?"
+            query = "SELECT name, student_email, results, ai_feedback, submission_date FROM results WHERE batch = ?"
             cursor.execute(query, (batch,))
             results_data = fetchall_dict(cursor)
         except pyodbc.Error as e:

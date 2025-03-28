@@ -191,20 +191,56 @@
       left: 100%;
     }
     
-    .select-wrapper {
-      position: relative;
-    }
-    
-    .select-wrapper::after {
-      content: '▼';
-      position: absolute;
-      top: 50%;
-      right: 15px;
-      transform: translateY(-50%);
-      color: var(--primary);
-      font-size: 12px;
-      pointer-events: none;
-    }
+/* Styling the select dropdown */
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.select-wrapper select {
+  width: 100%;
+  padding: 15px;
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.3); /* Matches input field */
+  color: var(--text);
+  font-size: 16px;
+  cursor: pointer;
+  appearance: none; /* Removes default styling */
+  transition: var(--transition);
+}
+
+/* Add hover effect */
+.select-wrapper select:hover {
+  border-color: var(--primary);
+}
+
+/* Add focus effect */
+.select-wrapper select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+}
+
+/* Custom dropdown arrow */
+.select-wrapper::after {
+  content: "▼";
+  font-size: 14px;
+  color: var(--text-secondary);
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Styling the dropdown options */
+.select-wrapper select option {
+  background-color: var(--card-bg);
+  color: var(--text);
+}
+
     
     select.form-control {
       appearance: none;
