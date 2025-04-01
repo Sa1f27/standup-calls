@@ -402,7 +402,7 @@ async def mentor_upload(
         shutil.copyfileobj(video.file, f)
 
     try:
-        model = whisper.load_model("tiny")
+        model = whisper.load_model("small") # tiny, base, small, medium, large
         result = model.transcribe(temp_path)
         transcript = result.get("text", "")
     finally:
