@@ -469,13 +469,7 @@
         <span>Batch: {{ batch }}</span>
       </div>
       
-      <div class="name-form-container">
-        <form id="nameForm">
-          <label for="userName">Your Name:</label>
-          <input type="text" id="userName" name="userName" required>
-          <button type="submit" class="submit-btn">Submit</button>
-        </form>
-      </div>
+
 
       {% if not submitted %}
       <!-- Quiz Card -->
@@ -484,10 +478,17 @@
           <h2>Your Quiz</h2>
         </div>
         <form action="/student/quiz" method="post" enctype="multipart/form-data">
-          <input type="hidden" name="token" value="{{ token }}">
-          <input type="hidden" name="batch" value="{{ batch }}">
+            <input type="hidden" name="token" value="{{ token }}">
+            <input type="hidden" name="batch" value="{{ batch }}">
+            <input type="hidden" name="mode" value="{{ mode }}">
+            <input type="hidden" name="questions_json" value='{{ questions | tojson | safe }}'>
           
-
+            <div class="name-form-container">
+              <label for="user_name">Your Name:</label>
+              <input type="text" id="user_name" name="user_name" required>
+            </div>
+            
+          
 
           <div class="quiz-container">
             <ol class="question-list">

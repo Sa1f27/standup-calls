@@ -521,24 +521,36 @@
             <h2>Start New Quiz</h2>
           </div>
           
+
           <form action="/student/quiz" method="get">
             <input type="hidden" name="token" value="{{ token }}">
-            
+          
             <div class="form-group">
               <label for="batch">Select Your Batch</label>
               <select id="batch" name="batch" class="form-control custom-dropdown" required>
                 <option value="" disabled selected>Select Batch</option>
                 <option value="b1">Batch 1</option>
                 <option value="b2">Batch 2</option>
-                <option value="b9">Batch 3</option>
+                <option value="b3">Batch 3</option>
+                <option value="b4">Batch 4</option>
               </select>
             </div>
-            
-            
+          
+            <div class="form-group">
+              <label for="mode">Select Test Type</label>
+              <select id="mode" name="mode" class="form-control custom-dropdown" required>
+                <option value="daily">Daily Test</option>
+                <option value="overall">Overall Test</option>
+              </select>
+            </div>
+          
             <button type="submit" class="btn-primary">
               Start Quiz
             </button>
           </form>
+          
+
+
         </div>
       </div>
     </div>

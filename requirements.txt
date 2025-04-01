@@ -8,4 +8,5 @@ SpeechRecognition
 groq
 pandas
 pyjwt
+python-docx
 #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

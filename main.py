@@ -8,9 +8,10 @@ import jwt
 import pyodbc
 import whisper
 
-# For Groq usage
-# pip install groq
-from groq import Groq
+# Set your OpenAI API key
+from openai import OpenAI
+
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 from fastapi import (
     FastAPI,
@@ -127,6 +128,19 @@ def setup_database():
         END
     """)
     cursor.execute("""
+    IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'daily_questions')
+        BEGIN
+            CREATE TABLE daily_questions (
+                id INT IDENTITY(1,1) PRIMARY KEY,
+                batch VARCHAR(255),
+                question TEXT,
+                transcript_hash VARCHAR(255),
+                created_at DATETIME DEFAULT GETDATE()
+            );
+        END
+    """)
+
+    cursor.execute("""
         IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'transcripts')
         BEGIN
             CREATE TABLE transcripts (
@@ -160,85 +174,100 @@ def setup_database():
 setup_database()
 
 # ==================================================
-#  Utility & Groq Integration
+#  Utility & OpenAI Integration
 # ==================================================
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
 
-try:
-    groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY", ""))
-except Exception:
-    groq_client = None
+# Generate quiz questions using OpenAI
 
-def generate_questions_with_groq(transcript: str) -> List[str]:
-    if not groq_client:
-        return [
-            "1) What is the main topic discussed in this lecture?",
-            "2) List two key points mentioned by the speaker.",
-            "3) How does this topic relate to your overall course?",
-            "4) Mention any real-world example provided (or give one).",
-            "5) Summarize the lecture in your own words."
-        ]
-
+def generate_questions_with_openai(transcript: str) -> List[str]:
     prompt = f"""
-You are an expert educator. Based on the following transcript, generate 5 quiz questions 
-to test a student's understanding. The questions should be numbered 1 to 5, with no extra commentary.
+You are a highly skilled teacher. Given the transcript below, create 10 thoughtful quiz questions that test a student's understanding.
+
+Guidelines:
+- Ask about key concepts, facts, and implications.
+- Questions should be clear and open-ended or short-answer style.
+- Do NOT include answers, numbering, or any commentary—just the raw questions.
 
 Transcript:
 \"\"\"{transcript}\"\"\"
 """
-    try:
-        response = groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[
-                {"role": "system", "content": "Generate 5 quiz questions from the transcript."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7,
-            max_tokens=512,
-            top_p=1
-        )
-        raw = response.choices[0].message.content.strip()
-        lines = [x.strip() for x in raw.split("\n") if x.strip()]
-        return lines[:5]
-    except Exception:
-        return [
-            "1) What is the main topic discussed in this lecture?",
-            "2) List two key points mentioned by the speaker.",
-            "3) How does this topic relate to your overall course?",
-            "4) Mention any real-world example provided (or give one).",
-            "5) Summarize the lecture in your own words."
-        ]
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "You generate quiz questions for students based on transcripts."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7,
+        max_tokens=512
+    )
+    raw = response.choices[0].message.content.strip()
+    lines = [x.strip() for x in raw.split("\n") if x.strip()]
+    return lines[:10]
 
-def evaluate_answers_with_groq(answers_text: str, transcript: str) -> str:
-    if not groq_client:
-        return "Good attempt! (Groq not configured; default feedback.)"
 
+# Evaluation using OpenAI
+
+def evaluate_answers_with_openai(answers_text: str, questions: str) -> str:
     prompt = f"""
-You are an expert educator. Evaluate the following student answers in relation to the transcript.
-Provide a concise summary of correctness, clarity, and missing pieces. Then give an overall score.
+You are an experienced educator grading student answers.
 
-Transcript:
-\"\"\"{transcript}\"\"\"
+Instructions:
+- Evaluate each student answer in context of the matching question.
+- Comment on accuracy, completeness, clarity, and reasoning.
+- After evaluating, provide a final score out of 10 and brief overall feedback.
+
+Questions:
+\"\"\"{questions}\"\"\"
 
 Student Answers:
 \"\"\"{answers_text}\"\"\"
 """
-    try:
-        response = groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[
-                {"role": "system", "content": "Evaluate student quiz answers."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7,
-            max_tokens=512,
-            top_p=1
-        )
-        feedback = response.choices[0].message.content.strip()
-        return feedback
-    except Exception:
-        return "Could not evaluate with Groq. Default feedback: Good attempt!"
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "You are a teacher grading student quiz submissions."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7,
+        max_tokens=512
+    )
+    return response.choices[0].message.content.strip()
+
+
+# ==================================================
+#  Random Question Generation from docx
+# ==================================================
+import random
+from docx import Document
+
+def ask_random_questions():
+    number_of_questions = 10
+    docx_file_path = r"clean_questions.docx"
+    
+    # Load the DOCX file
+    doc = Document(docx_file_path)
+    
+    # Collect all non-empty paragraphs
+    questions = []
+    for para in doc.paragraphs:
+        text = para.text.strip()
+        if text:
+            questions.append(text)
+    
+    # Select random questions
+    if len(questions) >= number_of_questions:
+        random_questions = random.sample(questions, number_of_questions)
+        
+        # Format questions as numbered strings in a list
+        formatted_questions = [f"{i}. {question}" for i, question in enumerate(random_questions, 1)]
+        
+        return formatted_questions
+    else:
+        print("Not enough questions found")
+        return []
+
 
 # ==================================================
 #  Speech-to-Text (STT) Endpoint (Server-Side)
@@ -329,7 +358,6 @@ async def post_register(
     except pyodbc.Error as e:
         cursor.close()
         conn.close()
-        # Could parse for duplicate error, but let's just raise generic.
         raise HTTPException(status_code=400, detail="User already exists or DB error")
 
     cursor.close()
@@ -436,6 +464,10 @@ async def mentor_view_results(
 # ==================================================
 #  Student Routes
 # ==================================================
+def get_transcript_hash(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
 @app.get("/student/dashboard", response_class=HTMLResponse)
 async def student_dashboard(request: Request, token: str):
     """
@@ -455,34 +487,72 @@ async def student_dashboard(request: Request, token: str):
 async def get_quiz(
     request: Request,
     token: str,
-    batch: str
+    batch: str,
+    mode: str = "daily"  # "daily" or "overall"
 ):
-    """
-    Student gets the quiz page for a particular batch
-    (fetches latest transcript, generates questions).
-    """
     user = verify_token(token)
     if user["role"] != "student":
         raise HTTPException(status_code=403, detail="Access denied")
 
     conn = get_db_connection()
     cursor = conn.cursor()
+    questions = []
+    transcript_text = ""
+
     try:
-        query = "SELECT TOP 1 transcript FROM transcripts WHERE batch = ? ORDER BY upload_date DESC"
-        cursor.execute(query, (batch,))
-        record = fetchone_dict(cursor)
+        if mode == "daily":
+            query = "SELECT TOP 1 transcript FROM transcripts WHERE batch = ? ORDER BY upload_date DESC"
+            cursor.execute(query, (batch,))
+            record = fetchone_dict(cursor)
+
+            if not record:
+                raise HTTPException(status_code=404, detail=f"No transcript found for batch '{batch}'")
+
+            transcript_text = record["transcript"]
+            transcript_hash = get_transcript_hash(transcript_text)
+
+            # Check if questions already exist for this transcript
+            cursor.execute(
+                "SELECT question FROM daily_questions WHERE batch = ? AND transcript_hash = ?",
+                (batch, transcript_hash)
+            )
+            rows = fetchall_dict(cursor)
+            if rows:
+                questions = generate_questions_with_openai(transcript_text)
+                if batch.lower() in ["b1", "b2"]:
+                    questions += ask_random_questions()
+            else:
+                # Generate questions using OpenAI and store them
+                questions = generate_questions_with_openai(transcript_text)
+                if batch.lower() in ["b1", "b2"]:
+                    questions += ask_random_questions()
+
+                for question in questions:
+                    cursor.execute(
+                        "INSERT INTO daily_questions (batch, question, transcript_hash) VALUES (?, ?, ?)",
+                        (batch, question, transcript_hash)
+                    )
+                conn.commit()
+
+        elif mode == "overall":
+            cursor.execute("SELECT question FROM daily_questions WHERE batch = ?", (batch,))
+            rows = fetchall_dict(cursor)
+            questions = [row["question"] for row in rows]
+
+            random.shuffle(questions) 
+            questions = questions[:30]  
+            
+            if not questions:
+                raise HTTPException(status_code=404, detail=f"No stored questions found for batch '{batch}'")
+
+        else:
+            raise HTTPException(status_code=400, detail="Invalid mode. Use 'daily' or 'overall'.")
+
     except pyodbc.Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    finally:
         cursor.close()
         conn.close()
-        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-    cursor.close()
-    conn.close()
-
-    if not record:
-        raise HTTPException(status_code=404, detail=f"No transcript found for batch '{batch}'")
-
-    transcript_text = record["transcript"]
-    questions = generate_questions_with_groq(transcript_text)
 
     return templates.TemplateResponse("quiz.html", {
         "request": request,
@@ -492,10 +562,10 @@ async def get_quiz(
         "transcript": transcript_text,
         "questions": questions,
         "submitted": False,
-        "results": None
+        "results": None,
+        "mode": mode
     })
 
-from typing import List
 
 @app.post("/student/quiz", response_class=HTMLResponse)
 async def post_quiz(
@@ -503,12 +573,17 @@ async def post_quiz(
     token: str = Form(...),
     batch: str = Form(...),
     user_name: str = Form(...),
+    questions_json: str = Form(...),
     answers: List[str] = Form(...)
 ):
     """
-    Student submits answers for a quiz, we then evaluate them (Groq or fallback),
+    Student submits answers for a quiz, we then evaluate them (using OpenAI),
     store them in DB, and display the feedback on the same page.
     """
+    import json
+
+    questions = json.loads(questions_json)
+
     user = verify_token(token)
     if user["role"] != "student":
         raise HTTPException(status_code=403, detail="Access denied")
@@ -529,12 +604,12 @@ async def post_quiz(
 
     # Combine answers for storage
     combined_answers = ""
-    for i, ans in enumerate(answers, start=1):
-        combined_answers += f"Q{i}: {ans}\n"
+    for q, a in zip(questions, answers):
+        combined_answers += f"Q: {q}: {a}\n"
 
-    # Evaluate answers with Groq
-    ai_feedback = evaluate_answers_with_groq(combined_answers, transcript_text)
-    num = 10
+    # Evaluate answers using OpenAI
+    ai_feedback = evaluate_answers_with_openai(combined_answers, questions)
+    
     # Save results
     try:
         insert_query = "INSERT INTO results (name, student_email, batch, results, ai_feedback ) VALUES (?, ?, ?, ?, ?)"
@@ -547,9 +622,6 @@ async def post_quiz(
 
     cursor.close()
     conn.close()
-
-    # Display same quiz page, but with results
-    questions = generate_questions_with_groq(transcript_text)
 
     return templates.TemplateResponse("quiz.html", {
         "request": request,
@@ -565,4 +637,3 @@ async def post_quiz(
             "ai_feedback": ai_feedback
         }
     })
-
