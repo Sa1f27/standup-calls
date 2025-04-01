@@ -3,7 +3,7 @@ uvicorn
 jinja2 
 mysql-connector-python 
 python-multipart 
-whisper 
+openai-whisper
 SpeechRecognition 
 pandas
 pyjwt
