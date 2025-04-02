@@ -3,20 +3,19 @@ import shutil
 import hashlib
 from datetime import datetime, timedelta
 from typing import List, Optional
-
+from pymongo import MongoClient
+from gridfs import GridFS
 import jwt
 import pyodbc
 import whisper
-
 
 from pymongo import MongoClient
 from gridfs import GridFS
 import base64
 
-# Set your OpenAI API key
-from openai import OpenAI
-
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+# For Groq usage
+# pip install groq
+from groq import Groq
 
 from fastapi import (
     FastAPI,
@@ -107,6 +106,156 @@ DB_CONFIG = {
     'driver': '{ODBC Driver 17 for SQL Server}'
 }
 
+# Add MongoDB configuration after DB_CONFIG
+# ... (keep existing imports) ...
+
+from pymongo import MongoClient
+from gridfs import GridFS
+
+# ... (keep existing imports) ...
+
+# MongoDB configuration
+MONGO_CONFIG = {
+    'host': '192.168.48.112',
+    'port': 27017,
+    'database': 'video_db'
+}
+
+def get_mongo_connection():
+    client = MongoClient(f"mongodb://{MONGO_CONFIG['host']}:{MONGO_CONFIG['port']}/")
+    db = client[MONGO_CONFIG['database']]
+    return db, GridFS(db)
+
+# Helper function to map batch name to collection name
+def get_batch_collection_name(batch: str) -> str:
+    # Convert batch (e.g., "batch001") to collection name (e.g., "batch_01")
+    batch_number = batch.replace("batch", "").lstrip("0")  # "001" -> "1"
+    return f"batch_{batch_number.zfill(2)}"  # "1" -> "batch_01"
+
+# Update /mentor/dashboard to list batches based on collections
+@app.get("/mentor/dashboard", response_class=HTMLResponse)
+async def mentor_dashboard(request: Request, token: str):
+    user = verify_token(token)
+    if user["role"] != "mentor":
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    db, fs = get_mongo_connection()
+    # Get all collections starting with "batch_"
+    all_collections = db.list_collection_names()
+    batch_collections = [col for col in all_collections if col.startswith("batch_")]
+    # Convert collection names to batch names (e.g., "batch_01" -> "batch001")
+    batches = [f"batch{col.replace('batch_', '').lstrip('0').zfill(3)}" for col in batch_collections]
+    
+    return templates.TemplateResponse("mentor_dashboard.html", {
+        "request": request,
+        "token": token,
+        "user": user,
+        "batches": sorted(batches)  # Sort for consistent display
+    })
+
+# Update /student/quiz endpoint
+@app.get("/student/quiz", response_class=HTMLResponse)
+async def get_quiz(
+    request: Request,
+    token: str,
+    batch: str
+):
+    user = verify_token(token)
+    if user["role"] != "student":
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    # Get the collection name for the batch
+    collection_name = get_batch_collection_name(batch)  # e.g., "batch_01" for "batch001"
+    
+    # Fetch video metadata from the batch collection
+    db, fs = get_mongo_connection()
+    batch_collection = db[collection_name]
+    video_doc = batch_collection.find_one({}, sort=[("_id", -1)])  # Get the latest document
+    
+    if not video_doc:
+        raise HTTPException(status_code=404, detail=f"No video found for batch '{batch}'")
+    
+    # Fetch the video file from fs.files using video_id
+    video_id = video_doc.get("video_id")
+    if not video_id:
+        raise HTTPException(status_code=404, detail=f"Video ID not found for batch '{batch}'")
+    
+    video_file_doc = db.fs.files.find_one({"_id": video_id})
+    if not video_file_doc:
+        raise HTTPException(status_code=404, detail=f"Video file not found in fs.files for ID '{video_id}'")
+    
+    # Retrieve video data from GridFS
+    video_file = fs.get(video_id)
+    video_data = video_file.read()
+    
+    # Log video size (optional, for debugging)
+    video_size = video_file_doc["length"]
+    print(f"Retrieved Video Size: {video_size} bytes")
+
+    # Process video with Whisper in the backend
+    temp_path = f"temp_video_{batch}.mp4"
+    try:
+        with open(temp_path, "wb") as f:
+            f.write(video_data)
+        
+        model = whisper.load_model("tiny")
+        result = model.transcribe(temp_path)
+        transcript_text = result.get("text", "")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Transcription error: {str(e)}")
+    finally:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+
+    # Store transcript in SQL Server (as before)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        mentor_email = "system@example.com"  # Default since no mentor_email in data
+        insert_query = "INSERT INTO transcripts (mentor_email, batch, transcript) VALUES (?, ?, ?)"
+        cursor.execute(insert_query, (mentor_email, batch, transcript_text))
+        conn.commit()
+    except pyodbc.Error as e:
+        cursor.close()
+        conn.close()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    finally:
+        cursor.close()
+        conn.close()
+
+    # Generate questions from transcript
+    questions = generate_questions_with_groq(transcript_text)
+
+    return templates.TemplateResponse("quiz.html", {
+        "request": request,
+        "token": token,
+        "user": user,
+        "batch": batch,
+        "transcript": transcript_text,
+        "questions": questions,
+        "submitted": False,
+        "results": None
+    })
+
+# ... (keep other endpoints unchanged) ...
+
+# Update /mentor/dashboard (keep it simple, no changes to video retrieval logic here)
+@app.get("/mentor/dashboard", response_class=HTMLResponse)
+async def mentor_dashboard(request: Request, token: str):
+    user = verify_token(token)
+    if user["role"] != "mentor":
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    db, fs = get_mongo_connection()
+    batches = db.fs.files.distinct("metadata.batch", {"metadata.mentor_email": user["email"]})
+    
+    return templates.TemplateResponse("mentor_dashboard.html", {
+        "request": request,
+        "token": token,
+        "user": user,
+        "batches": batches
+    })
+
 def get_db_connection():
     conn_str = (
         f"DRIVER={DB_CONFIG['driver']};"
@@ -133,19 +282,6 @@ def setup_database():
         END
     """)
     cursor.execute("""
-    IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'daily_questions')
-        BEGIN
-            CREATE TABLE daily_questions (
-                id INT IDENTITY(1,1) PRIMARY KEY,
-                batch VARCHAR(255),
-                question TEXT,
-                transcript_hash VARCHAR(255),
-                created_at DATETIME DEFAULT GETDATE()
-            );
-        END
-    """)
-
-    cursor.execute("""
         IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'transcripts')
         BEGIN
             CREATE TABLE transcripts (
@@ -162,7 +298,6 @@ def setup_database():
         BEGIN
             CREATE TABLE results (
                 id INT IDENTITY(1,1) PRIMARY KEY,
-                name VARCHAR(255),
                 student_email VARCHAR(255),
                 batch VARCHAR(255),
                 results TEXT,
@@ -178,177 +313,86 @@ def setup_database():
 # Initialize DB
 setup_database()
 
-
 # ==================================================
-#  MongoDB Connection (GridFS)
-# ==================================================
-
-def fetch_video_from_mongodb(batch: str, upload_date: Optional[str] = None) -> Optional[bytes]:
-    client = MongoClient(os.environ.get("MONGODB_URI", "mongodb://192.168.48.112:27017"))
-    db = client["video_storage"]
-    fs = GridFS(db)
-
-    query = {"metadata.batch": batch}
-    if upload_date:
-        try:
-            # Match date only (no time)
-            dt = datetime.strptime(upload_date, "%Y-%m-%d")
-            next_day = dt + timedelta(days=1)
-            query["uploadDate"] = {"$gte": dt, "$lt": next_day}
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
-
-    file_doc = db.fs.files.find_one(query, sort=[("uploadDate", -1)])
-    if not file_doc:
-        return None
-    return fs.get(file_doc["_id"]).read()
-
-
-@app.post("/mentor/fetch_transcript")
-async def mentor_fetch_transcript(
-    token: str = Form(...),
-    batch: str = Form(...),
-    upload_date: Optional[str] = Form(None)
-):
-    user = verify_token(token)
-    if user["role"] != "mentor":
-        raise HTTPException(status_code=403, detail="Not authorized")
-
-    video_bytes = fetch_video_from_mongodb(batch, upload_date)
-    if not video_bytes:
-        raise HTTPException(status_code=404, detail="No video found for this batch/date.")
-
-    temp_path = f"temp_{batch}_{datetime.utcnow().timestamp()}.mp4"
-    with open(temp_path, "wb") as f:
-        f.write(video_bytes)
-
-    try:
-        model = whisper.load_model("small")
-        result = model.transcribe(temp_path)
-        transcript = result.get("text", "")
-    finally:
-        if os.path.exists(temp_path):
-            os.remove(temp_path)
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    try:
-        cursor.execute(
-            "INSERT INTO transcripts (mentor_email, batch, transcript) VALUES (?, ?, ?)",
-            (user["email"], batch, transcript)
-        )
-        conn.commit()
-    except pyodbc.Error as e:
-        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-    finally:
-        cursor.close()
-        conn.close()
-
-    return JSONResponse({"message": "Transcript stored successfully."})
-
-
-
-
-
-# ==================================================
-#  Utility & OpenAI Integration
+#  Utility & Groq Integration
 # ==================================================
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
 
-# Generate quiz questions using OpenAI
+try:
+    groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY", ""))
+except Exception:
+    groq_client = None
 
-def generate_questions_with_openai(transcript: str) -> List[str]:
+def generate_questions_with_groq(transcript: str) -> List[str]:
+    if not groq_client:
+        return [
+            "1) What is the main topic discussed in this lecture?",
+            "2) List two key points mentioned by the speaker.",
+            "3) How does this topic relate to your overall course?",
+            "4) Mention any real-world example provided (or give one).",
+            "5) Summarize the lecture in your own words."
+        ]
+
     prompt = f"""
-You are a highly skilled teacher. Given the transcript below, create 10 thoughtful quiz questions that test a student's understanding.
-
-Guidelines:
-- Ask about key concepts, facts, and implications.
-- Questions should be clear and open-ended or short-answer style.
-- Do NOT include answers, numbering, or any commentary—just the raw questions.
+You are an expert educator. Based on the following transcript, generate 5 quiz questions 
+to test a student's understanding. The questions should be numbered 1 to 5, with no extra commentary.
 
 Transcript:
 \"\"\"{transcript}\"\"\"
 """
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": "You generate quiz questions for students based on transcripts."},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.7,
-        max_tokens=512
-    )
-    raw = response.choices[0].message.content.strip()
-    lines = [x.strip() for x in raw.split("\n") if x.strip()]
-    return lines[:10]
+    try:
+        response = groq_client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": "Generate 5 quiz questions from the transcript."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=512,
+            top_p=1
+        )
+        raw = response.choices[0].message.content.strip()
+        lines = [x.strip() for x in raw.split("\n") if x.strip()]
+        return lines[:5]
+    except Exception:
+        return [
+            "1) What is the main topic discussed in this lecture?",
+            "2) List two key points mentioned by the speaker.",
+            "3) How does this topic relate to your overall course?",
+            "4) Mention any real-world example provided (or give one).",
+            "5) Summarize the lecture in your own words."
+        ]
 
+def evaluate_answers_with_groq(answers_text: str, transcript: str) -> str:
+    if not groq_client:
+        return "Good attempt! (Groq not configured; default feedback.)"
 
-# Evaluation using OpenAI
-
-def evaluate_answers_with_openai(answers_text: str, questions: str) -> str:
     prompt = f"""
-You are an experienced educator grading student answers.
+You are an expert educator. Evaluate the following student answers in relation to the transcript.
+Provide a concise summary of correctness, clarity, and missing pieces. Then give an overall score.
 
-Instructions:
-- Evaluate each student answer in context of the matching question.
-- Comment on accuracy, completeness, clarity, and reasoning.
-- After evaluating, provide a final score out of 10 and brief overall feedback.
-
-Questions:
-\"\"\"{questions}\"\"\"
+Transcript:
+\"\"\"{transcript}\"\"\"
 
 Student Answers:
 \"\"\"{answers_text}\"\"\"
 """
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": "You are a teacher grading student quiz submissions."},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.7,
-        max_tokens=512
-    )
-    return response.choices[0].message.content.strip()
-
-
-# ==================================================
-#  Random Question Generation from docx
-# ==================================================
-import random
-from docx import Document
-
-def ask_random_questions():
-    number_of_questions = 10
-    docx_file_path = r"clean_questions.docx"
-    
-    # Load the DOCX file
-    doc = Document(docx_file_path)
-    
-    # Collect all non-empty paragraphs
-    questions = []
-    for para in doc.paragraphs:
-        text = para.text.strip()
-        if text:
-            questions.append(text)
-    
-    # Select random questions
-    if len(questions) >= number_of_questions:
-        random_questions = random.sample(questions, number_of_questions)
-        
-        # Format questions as numbered strings in a list
-        formatted_questions = [f"{i}. {question}" for i, question in enumerate(random_questions, 1)]
-        
-        return formatted_questions
-    else:
-        print("Not enough questions found")
-        return []
-
-@app.get("/api/placeholder/{width}/{height}")
-async def get_placeholder(width: int, height: int):
-    return {"message": f"No placeholder at {width}x{height}"}
-
+    try:
+        response = groq_client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": "Evaluate student quiz answers."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=512,
+            top_p=1
+        )
+        feedback = response.choices[0].message.content.strip()
+        return feedback
+    except Exception:
+        return "Could not evaluate with Groq. Default feedback: Good attempt!"
 
 # ==================================================
 #  Speech-to-Text (STT) Endpoint (Server-Side)
@@ -439,6 +483,7 @@ async def post_register(
     except pyodbc.Error as e:
         cursor.close()
         conn.close()
+        # Could parse for duplicate error, but let's just raise generic.
         raise HTTPException(status_code=400, detail="User already exists or DB error")
 
     cursor.close()
@@ -483,7 +528,7 @@ async def mentor_upload(
         shutil.copyfileobj(video.file, f)
 
     try:
-        model = whisper.load_model("small") # tiny, base, small, medium, large
+        model = whisper.load_model("tiny")
         result = model.transcribe(temp_path)
         transcript = result.get("text", "")
     finally:
@@ -524,7 +569,7 @@ async def mentor_view_results(
         conn = get_db_connection()
         cursor = conn.cursor()
         try:
-            query = "SELECT name, student_email, results, ai_feedback, submission_date FROM results WHERE batch = ?"
+            query = "SELECT student_email, results, ai_feedback, submission_date FROM results WHERE batch = ?"
             cursor.execute(query, (batch,))
             results_data = fetchall_dict(cursor)
         except pyodbc.Error as e:
@@ -545,10 +590,6 @@ async def mentor_view_results(
 # ==================================================
 #  Student Routes
 # ==================================================
-def get_transcript_hash(text: str) -> str:
-    return hashlib.sha256(text.encode("utf-8")).hexdigest()
-
-
 @app.get("/student/dashboard", response_class=HTMLResponse)
 async def student_dashboard(request: Request, token: str):
     """
@@ -568,72 +609,34 @@ async def student_dashboard(request: Request, token: str):
 async def get_quiz(
     request: Request,
     token: str,
-    batch: str,
-    mode: str = "daily"  # "daily" or "overall"
+    batch: str
 ):
+    """
+    Student gets the quiz page for a particular batch
+    (fetches latest transcript, generates questions).
+    """
     user = verify_token(token)
     if user["role"] != "student":
         raise HTTPException(status_code=403, detail="Access denied")
 
     conn = get_db_connection()
     cursor = conn.cursor()
-    questions = []
-    transcript_text = ""
-
     try:
-        if mode == "daily":
-            query = "SELECT TOP 1 transcript FROM transcripts WHERE batch = ? ORDER BY upload_date DESC"
-            cursor.execute(query, (batch,))
-            record = fetchone_dict(cursor)
-
-            if not record:
-                raise HTTPException(status_code=404, detail=f"No transcript found for batch '{batch}'")
-
-            transcript_text = record["transcript"]
-            transcript_hash = get_transcript_hash(transcript_text)
-
-            # Check if questions already exist for this transcript
-            cursor.execute(
-                "SELECT question FROM daily_questions WHERE batch = ? AND transcript_hash = ?",
-                (batch, transcript_hash)
-            )
-            rows = fetchall_dict(cursor)
-            if rows:
-                questions = generate_questions_with_openai(transcript_text)
-                if batch.lower() in ["b1", "b2"]:
-                    questions += ask_random_questions()
-            else:
-                # Generate questions using OpenAI and store them
-                questions = generate_questions_with_openai(transcript_text)
-                if batch.lower() in ["b1", "b2"]:
-                    questions += ask_random_questions()
-
-                for question in questions:
-                    cursor.execute(
-                        "INSERT INTO daily_questions (batch, question, transcript_hash) VALUES (?, ?, ?)",
-                        (batch, question, transcript_hash)
-                    )
-                conn.commit()
-
-        elif mode == "overall":
-            cursor.execute("SELECT question FROM daily_questions WHERE batch = ?", (batch,))
-            rows = fetchall_dict(cursor)
-            questions = [row["question"] for row in rows]
-
-            random.shuffle(questions) 
-            questions = questions[:30]  
-            
-            if not questions:
-                raise HTTPException(status_code=404, detail=f"No stored questions found for batch '{batch}'")
-
-        else:
-            raise HTTPException(status_code=400, detail="Invalid mode. Use 'daily' or 'overall'.")
-
+        query = "SELECT TOP 1 transcript FROM transcripts WHERE batch = ? ORDER BY upload_date DESC"
+        cursor.execute(query, (batch,))
+        record = fetchone_dict(cursor)
     except pyodbc.Error as e:
-        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-    finally:
         cursor.close()
         conn.close()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    cursor.close()
+    conn.close()
+
+    if not record:
+        raise HTTPException(status_code=404, detail=f"No transcript found for batch '{batch}'")
+
+    transcript_text = record["transcript"]
+    questions = generate_questions_with_groq(transcript_text)
 
     return templates.TemplateResponse("quiz.html", {
         "request": request,
@@ -643,28 +646,22 @@ async def get_quiz(
         "transcript": transcript_text,
         "questions": questions,
         "submitted": False,
-        "results": None,
-        "mode": mode
+        "results": None
     })
 
+from typing import List
 
 @app.post("/student/quiz", response_class=HTMLResponse)
 async def post_quiz(
     request: Request,
     token: str = Form(...),
     batch: str = Form(...),
-    user_name: str = Form(...),
-    questions_json: str = Form(...),
     answers: List[str] = Form(...)
 ):
     """
-    Student submits answers for a quiz, we then evaluate them (using OpenAI),
+    Student submits answers for a quiz, we then evaluate them (Groq or fallback),
     store them in DB, and display the feedback on the same page.
     """
-    import json
-
-    questions = json.loads(questions_json)
-
     user = verify_token(token)
     if user["role"] != "student":
         raise HTTPException(status_code=403, detail="Access denied")
@@ -685,16 +682,16 @@ async def post_quiz(
 
     # Combine answers for storage
     combined_answers = ""
-    for q, a in zip(questions, answers):
-        combined_answers += f"Q: {q}: {a}\n"
+    for i, ans in enumerate(answers, start=1):
+        combined_answers += f"Q{i}: {ans}\n"
 
-    # Evaluate answers using OpenAI
-    ai_feedback = evaluate_answers_with_openai(combined_answers, questions)
-    
+    # Evaluate answers with Groq
+    ai_feedback = evaluate_answers_with_groq(combined_answers, transcript_text)
+
     # Save results
     try:
-        insert_query = "INSERT INTO results (name, student_email, batch, results, ai_feedback ) VALUES (?, ?, ?, ?, ?)"
-        cursor.execute(insert_query, (user_name, user["email"], batch, combined_answers, ai_feedback))
+        insert_query = "INSERT INTO results (student_email, batch, results, ai_feedback) VALUES (?, ?, ?, ?)"
+        cursor.execute(insert_query, (user["email"], batch, combined_answers, ai_feedback))
         conn.commit()
     except pyodbc.Error as e:
         cursor.close()
@@ -703,6 +700,9 @@ async def post_quiz(
 
     cursor.close()
     conn.close()
+
+    # Display same quiz page, but with results
+    questions = generate_questions_with_groq(transcript_text)
 
     return templates.TemplateResponse("quiz.html", {
         "request": request,
@@ -713,7 +713,6 @@ async def post_quiz(
         "questions": questions,
         "submitted": True,
         "results": {
-            "name": user_name,
             "answers": combined_answers,
             "ai_feedback": ai_feedback
         }
