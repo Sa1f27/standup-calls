@@ -72,7 +72,7 @@ docs/_build/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-
+drive-retrive/
 # IPython
 profile_default/
 ipython_log.py

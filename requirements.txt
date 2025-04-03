@@ -9,3 +9,4 @@ pandas
 pyjwt
 python-docx
 openai
+pymongo

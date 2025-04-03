@@ -453,10 +453,10 @@
           </form>
         </div>
         
-        <!-- Fetch Transcript Card -->
+        <!-- Fetch Transcript from mongodb by latest date and selected batch or if date is mentioned, fetch by date -->
         <div class="card">
           <div class="card-header">
-            <h2>Fetch Lecture</h2>
+            <h2>Fetch Lecture Transcript</h2>
           </div>
           
           <form method="post" action="/mentor/fetch_transcript">
@@ -466,10 +466,10 @@
               <label for="transcriptBatch">Batch</label>
               <select id="transcriptBatch" name="batch" class="form-control" required>
                 <option value="" disabled selected>Select Batch</option>
-                <option value="b1">Batch 1</option>
-                <option value="b2">Batch 2</option>
-                <option value="b3">Batch 3</option>
-                <option value="b4">Batch 4</option>
+                <option value="batch_01.files">Batch 1</option>
+                <option value="batch_02">Batch 2</option>
+                <option value="batch_03">Batch 3</option>
+                <option value="batch_04">Batch 4</option>
               </select>
             </div>
             
@@ -478,9 +478,10 @@
               <input type="text" id="upload_date" name="upload_date" class="form-control" placeholder="YYYY-MM-DD">
             </div>
             
-            <button type="submit" class="btn">Fetch and Transcribe</button>
+            <button type="submit" class="btn">Fetch Transcript</button>
           </form>
         </div>
+
         <!-- View Results Card -->
         <div class="card">
           <div class="card-header">
@@ -527,6 +528,33 @@
         selectedFileName.style.display = 'none';
       }
     });
+    const urlParams = new URLSearchParams(window.location.search);
+  const successMessage = urlParams.get('success');
+  
+  // Display success message if present
+  window.addEventListener('DOMContentLoaded', (event) => {
+    if (successMessage) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'success-message';
+      messageDiv.textContent = successMessage;
+      messageDiv.style.backgroundColor = 'rgba(0, 200, 150, 0.1)';
+      messageDiv.style.color = 'var(--success)';
+      messageDiv.style.padding = '15px';
+      messageDiv.style.borderRadius = 'var(--border-radius)';
+      messageDiv.style.marginBottom = '20px';
+      
+      // Insert after the header
+      const header = document.querySelector('.header');
+      header.parentNode.insertBefore(messageDiv, header.nextSibling);
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        messageDiv.style.opacity = '0';
+        messageDiv.style.transition = 'opacity 1s ease';
+        setTimeout(() => messageDiv.remove(), 1000);
+      }, 5000);
+    }
+  });
   </script>
 </body>
 </html>

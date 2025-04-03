@@ -8,11 +8,6 @@ import jwt
 import pyodbc
 import whisper
 
-
-from pymongo import MongoClient
-from gridfs import GridFS
-import base64
-
 # Set your OpenAI API key
 from openai import OpenAI
 
@@ -178,77 +173,196 @@ def setup_database():
 # Initialize DB
 setup_database()
 
+# ===================================================
+# mongodb connection
+# ===================================================
 
-# ==================================================
-#  MongoDB Connection (GridFS)
-# ==================================================
+# import os
+# import shutil
+# import tempfile
+# from datetime import datetime
+# from bson.objectid import ObjectId
+# from pymongo import MongoClient
+# import whisper
 
-def fetch_video_from_mongodb(batch: str, upload_date: Optional[str] = None) -> Optional[bytes]:
-    client = MongoClient(os.environ.get("MONGODB_URI", "mongodb://192.168.48.112:27017"))
-    db = client["video_storage"]
-    fs = GridFS(db)
+# def get_mongo_connection():
+#     """Establish connection to MongoDB"""
+#     client = MongoClient('mongodb://192.168.48.112:27017/')
+#     db = client.video_db
+#     return db
 
-    query = {"metadata.batch": batch}
-    if upload_date:
-        try:
-            # Match date only (no time)
-            dt = datetime.strptime(upload_date, "%Y-%m-%d")
-            next_day = dt + timedelta(days=1)
-            query["uploadDate"] = {"$gte": dt, "$lt": next_day}
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
+# def fetch_video_by_batch_and_date(batch, date=None):
+#     """
+#     Fetch video from MongoDB by batch and date.
+#     If date is None, fetch the latest video for the batch.
+    
+#     Args:
+#         batch (str): Batch name (e.g., 'batch_03.files')
+#         date (str, optional): Date in format 'YYYY-MM-DD'. Defaults to None.
+    
+#     Returns:
+#         tuple: (video_binary, file_info) if found, else (None, None)
+#     """
+#     db = get_mongo_connection()
+#     collection = db[batch]
+    
+#     query = {}
+#     if date:
+#         # If a specific date is provided, create a date range for that day
+#         try:
+#             date_obj = datetime.strptime(date, '%Y-%m-%d')
+#             start_date = datetime.combine(date_obj.date(), datetime.min.time())
+#             end_date = datetime.combine(date_obj.date(), datetime.max.time())
+#             query['uploadDate'] = {'$gte': start_date, '$lte': end_date}
+#         except ValueError:
+#             return None, None, "Invalid date format. Please use YYYY-MM-DD."
+    
+#     # Sort by uploadDate in descending order to get the latest
+#     sort_order = [('uploadDate', -1)]
+    
+#     # Find the document (video file info)
+#     file_info = collection.find_one(query, sort=sort_order)
+    
+#     if not file_info:
+#         return None, None, f"No video found for batch {batch} {'on date ' + date if date else ''}."
+    
+#     # Get the file ID
+#     file_id = file_info['_id']
+    
+#     # Access GridFS files through the collection
+#     # Assuming this is using GridFS under the hood with a files and chunks collection
+#     chunks_collection = db[f"{batch.split('.')[0]}.chunks"]
+    
+#     # Fetch all chunks for this file
+#     chunks = chunks_collection.find({'files_id': file_id}).sort('n', 1)
+    
+#     # Concatenate all chunks to reconstruct the file
+#     file_data = b''
+#     for chunk in chunks:
+#         file_data += chunk['data']
+    
+#     return file_data, file_info, None
 
-    file_doc = db.fs.files.find_one(query, sort=[("uploadDate", -1)])
-    if not file_doc:
-        return None
-    return fs.get(file_doc["_id"]).read()
+# def transcribe_video(file_data, file_info):
+#     """
+#     Transcribe video using Whisper
+    
+#     Args:
+#         file_data (bytes): Binary data of the video
+#         file_info (dict): File metadata
+    
+#     Returns:
+#         str: Transcription text
+#     """
+#     # Create a temporary file to store the video
+#     temp_dir = tempfile.mkdtemp()
+#     temp_path = os.path.join(temp_dir, file_info.get('filename', 'temp_video.mp4'))
+    
+#     try:
+#         # Write binary data to temporary file
+#         with open(temp_path, 'wb') as f:
+#             f.write(file_data)
+        
+#         # Use Whisper to transcribe
+#         model = whisper.load_model("small")  # Use the same model as in your upload route
+#         result = model.transcribe(temp_path)
+#         transcript = result.get("text", "")
+        
+#         return transcript
+#     finally:
+#         # Clean up temporary files
+#         if os.path.exists(temp_dir):
+#             shutil.rmtree(temp_dir)
+
+# def save_transcript_to_sql(mentor_email, batch, transcript):
+#     """
+#     Save transcript to SQL database
+    
+#     Args:
+#         mentor_email (str): Email of the mentor
+#         batch (str): Batch name
+#         transcript (str): Transcription text
+#     """
+#     conn = get_db_connection()
+#     cursor = conn.cursor()
+#     try:
+#         # Convert batch_03.files format to b3 format if needed
+#         if '.' in batch:
+#             batch_num = batch.split('_')[1].split('.')[0]
+#             sql_batch = f"b{batch_num}"
+#         else:
+#             sql_batch = batch
+            
+#         insert_query = "INSERT INTO transcripts (mentor_email, batch, transcript) VALUES (?, ?, ?)"
+#         cursor.execute(insert_query, (mentor_email, sql_batch, transcript))
+#         conn.commit()
+#         return True
+#     except Exception as e:
+#         print(f"Database error: {str(e)}")
+#         return False
+#     finally:
+#         cursor.close()
+#         conn.close()
 
 
-@app.post("/mentor/fetch_transcript")
-async def mentor_fetch_transcript(
-    token: str = Form(...),
-    batch: str = Form(...),
-    upload_date: Optional[str] = Form(None)
-):
-    user = verify_token(token)
-    if user["role"] != "mentor":
-        raise HTTPException(status_code=403, detail="Not authorized")
-
-    video_bytes = fetch_video_from_mongodb(batch, upload_date)
-    if not video_bytes:
-        raise HTTPException(status_code=404, detail="No video found for this batch/date.")
-
-    temp_path = f"temp_{batch}_{datetime.utcnow().timestamp()}.mp4"
-    with open(temp_path, "wb") as f:
-        f.write(video_bytes)
-
-    try:
-        model = whisper.load_model("small")
-        result = model.transcribe(temp_path)
-        transcript = result.get("text", "")
-    finally:
-        if os.path.exists(temp_path):
-            os.remove(temp_path)
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    try:
-        cursor.execute(
-            "INSERT INTO transcripts (mentor_email, batch, transcript) VALUES (?, ?, ?)",
-            (user["email"], batch, transcript)
-        )
-        conn.commit()
-    except pyodbc.Error as e:
-        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-    finally:
-        cursor.close()
-        conn.close()
-
-    return JSONResponse({"message": "Transcript stored successfully."})
-
-
-
-
+# @app.post("/mentor/fetch_transcript")
+# async def fetch_transcript(
+#     request: Request,
+#     token: str = Form(...),
+#     batch: str = Form(...),
+#     upload_date: Optional[str] = Form(None)
+# ):
+#     """
+#     Mentor fetch transcript route that retrieves a video from MongoDB,
+#     transcribes it using Whisper, and stores the transcript in the SQL DB.
+#     """
+#     # Verify user token and role
+#     user = verify_token(token)
+#     if user["role"] != "mentor":
+#         raise HTTPException(status_code=403, detail="Not authorized")
+    
+#     # Fetch video from MongoDB
+#     file_data, file_info, error_message = fetch_video_by_batch_and_date(batch, upload_date)
+    
+#     if error_message:
+#         raise HTTPException(status_code=404, detail=error_message)
+    
+#     if not file_data or not file_info:
+#         raise HTTPException(status_code=404, detail=f"No video found for batch {batch}")
+    
+#     # Transcribe the video
+#     transcript = transcribe_video(file_data, file_info)
+    
+#     if not transcript:
+#         raise HTTPException(status_code=500, detail="Failed to transcribe video")
+    
+#     # Convert batch format if needed (batch_03.files to b3)
+#     if '.' in batch:
+#         batch_num = batch.split('_')[1].split('.')[0]
+#         sql_batch = f"b{batch_num}"
+#     else:
+#         sql_batch = batch
+    
+#     # Save transcript to SQL database
+#     conn = get_db_connection()
+#     cursor = conn.cursor()
+#     try:
+#         insert_query = "INSERT INTO transcripts (mentor_email, batch, transcript) VALUES (?, ?, ?)"
+#         cursor.execute(insert_query, (user["email"], sql_batch, transcript))
+#         conn.commit()
+#     except pyodbc.Error as e:
+#         cursor.close()
+#         conn.close()
+#         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    
+#     cursor.close()
+#     conn.close()
+    
+#     # Redirect back to dashboard with success message
+#     return RedirectResponse(
+#         url=f"/mentor/dashboard?token={token}&success=Transcript generated and saved successfully", 
+#         status_code=303
+#     )
 
 # ==================================================
 #  Utility & OpenAI Integration
@@ -348,7 +462,6 @@ def ask_random_questions():
 @app.get("/api/placeholder/{width}/{height}")
 async def get_placeholder(width: int, height: int):
     return {"message": f"No placeholder at {width}x{height}"}
-
 
 # ==================================================
 #  Speech-to-Text (STT) Endpoint (Server-Side)
