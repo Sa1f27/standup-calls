@@ -15,6 +15,7 @@
       --text: #ffffff;
       --text-secondary: #a8b1cf;
       --success: #00C896;
+      --error: #FF6347;
       --border-radius: 10px;
       --transition: all 0.3s ease;
     }
@@ -386,6 +387,36 @@
       bottom: -50px;
       left: -50px;
     }
+
+    /* Notification styles */
+    .notification {
+      padding: 15px;
+      border-radius: var(--border-radius);
+      margin-bottom: 15px;
+      position: relative;
+    }
+    
+    .notification.success {
+      background-color: rgba(0, 200, 150, 0.1);
+      color: var(--success);
+      border-left: 4px solid var(--success);
+    }
+    
+    .notification.error {
+      background-color: rgba(255, 99, 71, 0.1);
+      color: var(--error);
+      border-left: 4px solid var(--error);
+    }
+    
+    .notification .close-btn {
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: bold;
+    }
     
     /* Responsive */
     @media (max-width: 991px) {
@@ -411,6 +442,9 @@
         <h1>Mentor Dashboard</h1>
         <div id="currentDate"></div>
       </div>
+      
+      <!-- Notification Container - Notifications will be inserted here by JavaScript -->
+      <div id="notification-container"></div>
       
       <div class="cards-container">
         <!-- Upload Video Card -->
@@ -453,7 +487,7 @@
           </form>
         </div>
         
-        <!-- Fetch Transcript from mongodb by latest date and selected batch or if date is mentioned, fetch by date -->
+        <!-- Fetch Transcript from MongoDB -->
         <div class="card">
           <div class="card-header">
             <h2>Fetch Lecture Transcript</h2>
@@ -467,9 +501,9 @@
               <select id="transcriptBatch" name="batch" class="form-control" required>
                 <option value="" disabled selected>Select Batch</option>
                 <option value="batch_01.files">Batch 1</option>
-                <option value="batch_02">Batch 2</option>
-                <option value="batch_03">Batch 3</option>
-                <option value="batch_04">Batch 4</option>
+                <option value="batch_02.files">Batch 2</option>
+                <option value="batch_03.files">Batch 3</option>
+                <option value="batch_04.files">Batch 4</option>
               </select>
             </div>
             
@@ -478,7 +512,7 @@
               <input type="text" id="upload_date" name="upload_date" class="form-control" placeholder="YYYY-MM-DD">
             </div>
             
-            <button type="submit" class="btn">Fetch Transcript</button>
+            <button type="submit" class="btn">Fetch and Transcribe</button>
           </form>
         </div>
 
@@ -528,33 +562,64 @@
         selectedFileName.style.display = 'none';
       }
     });
+    
+    // Notification system
+    // Check for status messages in URL parameters
     const urlParams = new URLSearchParams(window.location.search);
-  const successMessage = urlParams.get('success');
-  
-  // Display success message if present
-  window.addEventListener('DOMContentLoaded', (event) => {
-    if (successMessage) {
-      const messageDiv = document.createElement('div');
-      messageDiv.className = 'success-message';
-      messageDiv.textContent = successMessage;
-      messageDiv.style.backgroundColor = 'rgba(0, 200, 150, 0.1)';
-      messageDiv.style.color = 'var(--success)';
-      messageDiv.style.padding = '15px';
-      messageDiv.style.borderRadius = 'var(--border-radius)';
-      messageDiv.style.marginBottom = '20px';
+    const successMessage = urlParams.get('success');
+    const errorMessage = urlParams.get('error');
+    
+    // Function to show notifications
+    function showNotification(message, type) {
+      const container = document.getElementById('notification-container');
       
-      // Insert after the header
-      const header = document.querySelector('.header');
-      header.parentNode.insertBefore(messageDiv, header.nextSibling);
+      const notificationDiv = document.createElement('div');
+      notificationDiv.className = `notification ${type}`;
+      notificationDiv.innerHTML = message;
       
-      // Auto-hide after 5 seconds
+      // Add close button
+      const closeBtn = document.createElement('span');
+      closeBtn.className = 'close-btn';
+      closeBtn.innerHTML = '&times;';
+      closeBtn.onclick = function() {
+        notificationDiv.remove();
+      };
+      
+      notificationDiv.appendChild(closeBtn);
+      container.appendChild(notificationDiv);
+      
+      // Auto-hide after 7 seconds
       setTimeout(() => {
-        messageDiv.style.opacity = '0';
-        messageDiv.style.transition = 'opacity 1s ease';
-        setTimeout(() => messageDiv.remove(), 1000);
-      }, 5000);
+        notificationDiv.style.opacity = '0';
+        notificationDiv.style.transition = 'opacity 1s ease';
+        setTimeout(() => {
+          if (notificationDiv.parentNode) {
+            notificationDiv.remove();
+          }
+        }, 1000);
+      }, 7000);
     }
-  });
+    
+    // Display notifications on page load
+    window.addEventListener('DOMContentLoaded', (event) => {
+      if (successMessage) {
+        showNotification(successMessage, 'success');
+        
+        // Clean URL parameters
+        const url = new URL(window.location);
+        url.searchParams.delete('success');
+        window.history.replaceState({}, document.title, url);
+      }
+      
+      if (errorMessage) {
+        showNotification(errorMessage, 'error');
+        
+        // Clean URL parameters
+        const url = new URL(window.location);
+        url.searchParams.delete('error');
+        window.history.replaceState({}, document.title, url);
+      }
+    });
   </script>
 </body>
 </html>
