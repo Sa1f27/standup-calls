@@ -98,7 +98,7 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
 #  SQL Server Connection & DB Setup
 # ==================================================
 DB_CONFIG = {
-    'server': '192.168.48.112',
+    'server': '192.168.48.200',
     'database': 'mentoring_system',
     'username': 'sa',
     'password': 'Welcome@123',
@@ -182,7 +182,7 @@ setup_database()
 def get_mongo_connection():
     """Establish connection to MongoDB"""
     print("DEBUG: Starting connection to MongoDB...")
-    client = MongoClient('mongodb://192.168.48.112:27017/')
+    client = MongoClient('mongodb://192.168.48.200:27017/')
     db = client.video_db
     print("DEBUG: MongoDB connection established.")
     return db, gridfs.GridFS(db)
