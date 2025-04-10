@@ -740,7 +740,7 @@ async def student_dashboard(request: Request, token: str):
         "user": user
     })
 
-@app.get("/student/quiz", response_class=HTMLResponse)
+@app.get("/student/student_test", response_class=HTMLResponse)
 async def get_quiz(
     request: Request,
     token: str,
@@ -824,7 +824,7 @@ async def get_quiz(
     })
 
 
-@app.post("/student/quiz", response_class=HTMLResponse)
+@app.post("/student/student_test", response_class=HTMLResponse)
 async def post_quiz(
     request: Request,
     token: str = Form(...),
