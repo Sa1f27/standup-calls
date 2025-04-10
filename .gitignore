@@ -81,8 +81,8 @@ ipython_log.py
 .env
 .venv
 env/
-stcvenv/
 venv/
+stcvenv/
 ENV/
 env.bak/
 venv.bak/
