@@ -1,0 +1,859 @@
+===== Starting FastAPI Server ===== 
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\stcvenv\Scripts\uvicorn.exe\__main__.py", line 7, in <module>
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\stcvenv\Lib\site-packages\click\core.py", line 1161, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\stcvenv\Lib\site-packages\click\core.py", line 1082, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\stcvenv\Lib\site-packages\click\core.py", line 1443, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\stcvenv\Lib\site-packages\click\core.py", line 788, in invoke
+    return __callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\stcvenv\Lib\site-packages\uvicorn\main.py", line 412, in main
+    run(
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\stcvenv\Lib\site-packages\uvicorn\main.py", line 579, in run
+    server.run()
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\stcvenv\Lib\site-packages\uvicorn\server.py", line 66, in run
+    return asyncio.run(self.serve(sockets=sockets))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\stcvenv\Lib\site-packages\uvicorn\server.py", line 70, in serve
+    await self._serve(sockets)
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\stcvenv\Lib\site-packages\uvicorn\server.py", line 77, in _serve
+    config.load()
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\stcvenv\Lib\site-packages\uvicorn\config.py", line 435, in load
+    self.loaded_app = import_from_string(self.app)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\stcvenv\Lib\site-packages\uvicorn\importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\main.py", line 177, in <module>
+    setup_database()
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\main.py", line 119, in setup_database
+    conn = get_db_connection()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\PROJECTS\standup-calls\main.py", line 116, in get_db_connection
+    return pyodbc.connect(conn_str)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+pyodbc.OperationalError: ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]Named Pipes Provider: Could not open a connection to SQL Server [2].  (2) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (2)')
+===== Starting FastAPI Server ===== 
+INFO:     Started server process [8024]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on https://192.168.48.200:443 (Press CTRL+C to quit)
+SQL connection failed (attempt 1/5). Retrying in 5s...
+SQL connection failed (attempt 2/5). Retrying in 5s...
+INFO:     192.168.48.16:62586 - "GET / HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.16:62593 - "POST /login HTTP/1.1" 303 See Other
+INFO:     192.168.48.16:62593 - "GET /student/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxMTUyMzR9.8cE6T6K-GNLfTDlTZIZrItf283VKzAnVVVSGscus3wM HTTP/1.1" 200 OK
+INFO:     192.168.48.16:62593 - "GET /api/placeholder/120/120 HTTP/1.1" 200 OK
+INFO:     192.168.48.200:49970 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.48.200:49970 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     192.168.48.16:62596 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxMTUyMzR9.8cE6T6K-GNLfTDlTZIZrItf283VKzAnVVVSGscus3wM&batch=b3&mode=daily HTTP/1.1" 200 OK
+INFO:     192.168.48.16:62614 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.48.16:62614 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     192.168.48.16:62624 - "POST /login HTTP/1.1" 303 See Other
+INFO:     192.168.48.16:62624 - "GET /student/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxMTUzMTJ9.yb84G9uGCtwjRcPkiB8QIZlXSnrybDVyNNzDVrhYRvk HTTP/1.1" 200 OK
+INFO:     192.168.48.16:62624 - "GET /api/placeholder/120/120 HTTP/1.1" 200 OK
+INFO:     192.168.48.16:62630 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxMTUzMTJ9.yb84G9uGCtwjRcPkiB8QIZlXSnrybDVyNNzDVrhYRvk&batch=b3&mode=daily HTTP/1.1" 200 OK
+INFO:     192.168.48.16:62638 - "POST /student/quiz HTTP/1.1" 200 OK
+INFO:     192.168.48.16:62641 - "POST /student/quiz HTTP/1.1" 200 OK
+INFO:     192.168.48.16:62662 - "POST /student/quiz HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.16:62669 - "GET /student/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxMTUzMTJ9.yb84G9uGCtwjRcPkiB8QIZlXSnrybDVyNNzDVrhYRvk HTTP/1.1" 200 OK
+INFO:     192.168.48.16:62669 - "GET /api/placeholder/120/120 HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.16:62673 - "POST /student/quiz HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.16:62686 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxMTUzMTJ9.yb84G9uGCtwjRcPkiB8QIZlXSnrybDVyNNzDVrhYRvk&batch=b3&mode=daily HTTP/1.1" 200 OK
+INFO:     192.168.48.16:62686 - "GET /student/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxMTUzMTJ9.yb84G9uGCtwjRcPkiB8QIZlXSnrybDVyNNzDVrhYRvk HTTP/1.1" 200 OK
+INFO:     192.168.48.16:62686 - "GET /api/placeholder/120/120 HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.16:62695 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.48.16:62701 - "POST /login HTTP/1.1" 303 See Other
+INFO:     192.168.48.16:62701 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1lbnRvckBnbWFpbC5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MTE1NjQ4fQ.f4inQuVkznqOJf1oEyRJVjH9hWzY4mK7yqs9byUOw-Q HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.16:62707 - "GET /mentor/results?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1lbnRvckBnbWFpbC5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MTE1NjQ4fQ.f4inQuVkznqOJf1oEyRJVjH9hWzY4mK7yqs9byUOw-Q&batch=b3 HTTP/1.1" 200 OK
+INFO:     192.168.48.16:62715 - "GET /mentor/results?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1lbnRvckBnbWFpbC5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MTE1NjQ4fQ.f4inQuVkznqOJf1oEyRJVjH9hWzY4mK7yqs9byUOw-Q&batch=b4 HTTP/1.1" 200 OK
+INFO:     192.168.48.23:53522 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxMTE1NzZ9.6qwEzbqRW6JoGLKL3hZosc8UNUS2NQrgY1dH1sJlEXk&batch=b4&mode=daily HTTP/1.1" 401 Unauthorized
+INFO:     192.168.48.23:53522 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     192.168.48.23:53522 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.48.23:53522 - "GET / HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.18:37726 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxMTIzMDN9.WawRYVByBHeYtaQYxN6yncWZN3KXDo8ww-Am2JNmIF0&batch=b3&mode=daily HTTP/1.1" 401 Unauthorized
+INFO:     192.168.48.18:37744 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     192.168.48.18:37764 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxMTIzMDN9.WawRYVByBHeYtaQYxN6yncWZN3KXDo8ww-Am2JNmIF0&batch=b3&mode=daily HTTP/1.1" 401 Unauthorized
+INFO:     192.168.48.18:37764 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxMTIzMDN9.WawRYVByBHeYtaQYxN6yncWZN3KXDo8ww-Am2JNmIF0&batch=b3&mode=daily HTTP/1.1" 401 Unauthorized
+INFO:     192.168.48.20:49930 - "GET /mentor/results?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1lbnRvckBnbWFpbC5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MTExODgzfQ.OfdKwDgbdk-Wag1N1k0V5_1py7lyNJxF3bJJEbYC0Ow&batch=b4 HTTP/1.1" 401 Unauthorized
+INFO:     192.168.48.20:49930 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.15:63324 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1lbnRvckBnbWFpbC5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MTE1NjQ4fQ.f4inQuVkznqOJf1oEyRJVjH9hWzY4mK7yqs9byUOw-Q HTTP/1.1" 401 Unauthorized
+INFO:     192.168.48.15:63327 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.15:63806 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1lbnRvckBnbWFpbC5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MTE1NjQ4fQ.f4inQuVkznqOJf1oEyRJVjH9hWzY4mK7yqs9byUOw-Q HTTP/1.1" 401 Unauthorized
+INFO:     192.168.48.15:63806 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1lbnRvckBnbWFpbC5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MTE1NjQ4fQ.f4inQuVkznqOJf1oEyRJVjH9hWzY4mK7yqs9byUOw-Q HTTP/1.1" 401 Unauthorized
+INFO:     192.168.48.15:63806 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1lbnRvckBnbWFpbC5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MTE1NjQ4fQ.f4inQuVkznqOJf1oEyRJVjH9hWzY4mK7yqs9byUOw-Q HTTP/1.1" 401 Unauthorized
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.15:63827 - "GET / HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.15:63839 - "POST /login HTTP/1.1" 303 See Other
+INFO:     192.168.48.15:63839 - "GET /student/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxNzcxNDJ9.wjTG7v2T0Kw2AlveBXlkb4S2EvGRooob3fouejLhLd8 HTTP/1.1" 200 OK
+INFO:     192.168.48.15:63839 - "GET /api/placeholder/120/120 HTTP/1.1" 200 OK
+INFO:     192.168.48.15:63843 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxNzcxNDJ9.wjTG7v2T0Kw2AlveBXlkb4S2EvGRooob3fouejLhLd8&batch=b1&mode=daily HTTP/1.1" 404 Not Found
+INFO:     192.168.48.14:54765 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.48.14:54765 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.15:63852 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxNzcxNDJ9.wjTG7v2T0Kw2AlveBXlkb4S2EvGRooob3fouejLhLd8&batch=b1&mode=daily HTTP/1.1" 404 Not Found
+INFO:     192.168.48.14:54770 - "POST /login HTTP/1.1" 303 See Other
+INFO:     192.168.48.14:54770 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1lbnRvckBnbWFpbC5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MTc3MTk1fQ.89UdS_663_xRnYDwwghYaOpBtA0G2jk_283P0Ou6Yks HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\site-packages\whisper\transcribe.py:126: UserWarning: FP16 is not supported on CPU; using FP32 instead
+  warnings.warn("FP16 is not supported on CPU; using FP32 instead")
+DEBUG: fetch_video_by_batch_and_date called with batch='batch_01' and date=''
+DEBUG: Starting connection to MongoDB...
+DEBUG: MongoDB connection established.
+DEBUG: Using collection 'batch_01' for batch 'batch_01'
+DEBUG: Collection 'batch_01' found.
+DEBUG: Querying the collection for the file document...
+DEBUG: Found file document: {'_id': ObjectId('67f3899a383e0a0673353bab'), 'file_name': 'uyb-hhgf-tza (2025-03-28 11:27 GMT+5:30)', 'file_id': '1GEFLJbXPrrId5ibiiMOovMa6hzVjmeiZ', 'source_folder': 'Meet Recordings', 'video_id': ObjectId('67f3898b383e0a0673353950'), 'upload_datetime': '2025-04-07 13:45:22'}
+DEBUG: File found in GridFS by video_id. Retrieving file...
+DEBUG: File retrieved successfully via video_id.
+DEBUG: Starting transcription process...
+DEBUG: Using safe file name: 1GEFLJbXPrrId5ibiiMOovMa6hzVjmeiZ.mp4
+DEBUG: Temporary file path created at: C:\Users\ADMINI~1\AppData\Local\Temp\tmpxfmcrbub\1GEFLJbXPrrId5ibiiMOovMa6hzVjmeiZ.mp4
+DEBUG: Video data written to temporary file.
+DEBUG: Loading Whisper model for transcription...
+DEBUG: Whisper model loaded. Starting transcription...
+DEBUG: Transcription complete.
+DEBUG: Cleaning up temporary files...
+DEBUG: Temporary files removed.
+INFO:     192.168.48.14:54775 - "POST /mentor/fetch_transcript HTTP/1.1" 303 See Other
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.14:54775 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1lbnRvckBnbWFpbC5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MTc3MTk1fQ.89UdS_663_xRnYDwwghYaOpBtA0G2jk_283P0Ou6Yks&success=Transcript%20generated%20and%20saved%20successfully HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.14:54812 - "POST /login HTTP/1.1" 303 See Other
+INFO:     192.168.48.14:54812 - "GET /student/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxNzc2NzN9._sMTDcn67HHwSBKP4Dy5PF4ehBrOr_o7Miy53pao_q8 HTTP/1.1" 200 OK
+INFO:     192.168.48.14:54812 - "GET /api/placeholder/120/120 HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.14:54816 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxNzc2NzN9._sMTDcn67HHwSBKP4Dy5PF4ehBrOr_o7Miy53pao_q8&batch=b1&mode=daily HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.14:54821 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxNzc2NzN9._sMTDcn67HHwSBKP4Dy5PF4ehBrOr_o7Miy53pao_q8&batch=b1&mode=daily HTTP/1.1" 200 OK
+INFO:     192.168.48.14:54821 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxNzc2NzN9._sMTDcn67HHwSBKP4Dy5PF4ehBrOr_o7Miy53pao_q8&batch=b1&mode=overall HTTP/1.1" 200 OK
+INFO:     192.168.48.14:54862 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxNzc2NzN9._sMTDcn67HHwSBKP4Dy5PF4ehBrOr_o7Miy53pao_q8&batch=b1&mode=overall HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.14:55008 - "POST /student/quiz HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.13:41908 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0dWRlbnRAZ21haWwuY29tIiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE3NDQxMTIzMDN9.WawRYVByBHeYtaQYxN6yncWZN3KXDo8ww-Am2JNmIF0&batch=b3&mode=daily HTTP/1.1" 401 Unauthorized
+INFO:     192.168.48.13:41908 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     192.168.48.13:41926 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.48.31:49818 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.48.31:49818 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     192.168.48.31:49818 - "GET / HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.20:65084 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.48.20:65084 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     106.221.186.102:38310 - "GET / HTTP/1.1" 200 OK
+INFO:     106.221.186.102:38310 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     106.221.186.102:37653 - "POST /register HTTP/1.1" 303 See Other
+INFO:     106.221.186.102:37653 - "GET / HTTP/1.1" 200 OK
+INFO:     106.221.186.102:31813 - "POST /login HTTP/1.1" 400 Bad Request
+INFO:     106.221.186.102:44404 - "POST /register HTTP/1.1" 400 Bad Request
+INFO:     223.228.109.238:54897 - "GET / HTTP/1.1" 200 OK
+INFO:     223.228.109.238:54897 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     223.228.109.238:54914 - "POST /register HTTP/1.1" 303 See Other
+INFO:     223.228.109.238:54914 - "GET / HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     223.228.109.238:54939 - "POST /login HTTP/1.1" 303 See Other
+INFO:     223.228.109.238:54946 - "GET /student/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdHlhdEBsYW5lZHV0ZWNoLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzQ0MjAwOTg3fQ.2SD25W9xRMhS6RkWh9rGOyLv6L9aMG47cM7vexoC2gI HTTP/1.1" 200 OK
+INFO:     223.228.109.238:54946 - "GET /api/placeholder/120/120 HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     223.228.109.238:54952 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdHlhdEBsYW5lZHV0ZWNoLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzQ0MjAwOTg3fQ.2SD25W9xRMhS6RkWh9rGOyLv6L9aMG47cM7vexoC2gI&batch=b3&mode=overall HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     223.228.109.238:54969 - "GET /student/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdHlhdEBsYW5lZHV0ZWNoLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzQ0MjAwOTg3fQ.2SD25W9xRMhS6RkWh9rGOyLv6L9aMG47cM7vexoC2gI HTTP/1.1" 200 OK
+INFO:     223.228.109.238:54969 - "GET /api/placeholder/120/120 HTTP/1.1" 200 OK
+INFO:     223.228.109.238:54980 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdHlhdEBsYW5lZHV0ZWNoLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzQ0MjAwOTg3fQ.2SD25W9xRMhS6RkWh9rGOyLv6L9aMG47cM7vexoC2gI&batch=b3&mode=overall HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     223.228.109.238:54984 - "GET /student/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdHlhdEBsYW5lZHV0ZWNoLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzQ0MjAwOTg3fQ.2SD25W9xRMhS6RkWh9rGOyLv6L9aMG47cM7vexoC2gI HTTP/1.1" 200 OK
+INFO:     223.228.109.238:54984 - "GET /api/placeholder/120/120 HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     223.228.109.238:54987 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdHlhdEBsYW5lZHV0ZWNoLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzQ0MjAwOTg3fQ.2SD25W9xRMhS6RkWh9rGOyLv6L9aMG47cM7vexoC2gI&batch=b1&mode=overall HTTP/1.1" 200 OK
+INFO:     223.228.109.238:54998 - "GET /student/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdHlhdEBsYW5lZHV0ZWNoLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzQ0MjAwOTg3fQ.2SD25W9xRMhS6RkWh9rGOyLv6L9aMG47cM7vexoC2gI HTTP/1.1" 200 OK
+INFO:     223.228.109.238:54998 - "GET /api/placeholder/120/120 HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     223.228.109.238:55003 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdHlhdEBsYW5lZHV0ZWNoLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzQ0MjAwOTg3fQ.2SD25W9xRMhS6RkWh9rGOyLv6L9aMG47cM7vexoC2gI&batch=b3&mode=daily HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     223.228.109.238:55009 - "GET /student/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdHlhdEBsYW5lZHV0ZWNoLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzQ0MjAwOTg3fQ.2SD25W9xRMhS6RkWh9rGOyLv6L9aMG47cM7vexoC2gI HTTP/1.1" 200 OK
+INFO:     223.228.109.238:55009 - "GET /api/placeholder/120/120 HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     223.228.109.238:55012 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdHlhdEBsYW5lZHV0ZWNoLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzQ0MjAwOTg3fQ.2SD25W9xRMhS6RkWh9rGOyLv6L9aMG47cM7vexoC2gI&batch=b1&mode=overall HTTP/1.1" 200 OK
+INFO:     192.168.48.23:46534 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.48.23:46552 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     223.228.109.238:55025 - "GET /student/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdHlhdEBsYW5lZHV0ZWNoLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzQ0MjAwOTg3fQ.2SD25W9xRMhS6RkWh9rGOyLv6L9aMG47cM7vexoC2gI HTTP/1.1" 200 OK
+INFO:     223.228.109.238:55025 - "GET /api/placeholder/120/120 HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     223.228.109.238:55032 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdHlhdEBsYW5lZHV0ZWNoLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzQ0MjAwOTg3fQ.2SD25W9xRMhS6RkWh9rGOyLv6L9aMG47cM7vexoC2gI&batch=b4&mode=daily HTTP/1.1" 200 OK
+INFO:     223.228.109.238:55035 - "GET /student/quiz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdHlhdEBsYW5lZHV0ZWNoLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzQ0MjAwOTg3fQ.2SD25W9xRMhS6RkWh9rGOyLv6L9aMG47cM7vexoC2gI&batch=b4&mode=daily HTTP/1.1" 200 OK
+INFO:     192.168.48.23:46638 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.48.23:46646 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     192.168.48.23:46672 - "POST /login HTTP/1.1" 303 See Other
+INFO:     192.168.48.23:46672 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1lbnRvckBnbWFpbC5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MjAxNDM1fQ.42DTmj6zA52Aw-OP6USkoxIws6VzryWv0_NgEDfiQB0 HTTP/1.1" 200 OK
+DEBUG: fetch_video_by_batch_and_date called with batch='batch_01' and date=''
+DEBUG: Starting connection to MongoDB...
+DEBUG: MongoDB connection established.
+DEBUG: Using collection 'batch_01' for batch 'batch_01'
+DEBUG: Collection 'batch_01' found.
+DEBUG: Querying the collection for the file document...
+DEBUG: Found file document: {'_id': ObjectId('67f3899a383e0a0673353bab'), 'file_name': 'uyb-hhgf-tza (2025-03-28 11:27 GMT+5:30)', 'file_id': '1GEFLJbXPrrId5ibiiMOovMa6hzVjmeiZ', 'source_folder': 'Meet Recordings', 'video_id': ObjectId('67f3898b383e0a0673353950'), 'upload_datetime': '2025-04-07 13:45:22'}
+DEBUG: File found in GridFS by video_id. Retrieving file...
+DEBUG: File retrieved successfully via video_id.
+DEBUG: Starting transcription process...
+DEBUG: Using safe file name: 1GEFLJbXPrrId5ibiiMOovMa6hzVjmeiZ.mp4
+DEBUG: Temporary file path created at: C:\Users\ADMINI~1\AppData\Local\Temp\tmpoamg7q_u\1GEFLJbXPrrId5ibiiMOovMa6hzVjmeiZ.mp4
+DEBUG: Video data written to temporary file.
+DEBUG: Loading Whisper model for transcription...
+DEBUG: Whisper model loaded. Starting transcription...
+DEBUG: Transcription complete.
+DEBUG: Cleaning up temporary files...
+DEBUG: Temporary files removed.
+INFO:     192.168.48.23:46692 - "POST /mentor/fetch_transcript HTTP/1.1" 303 See Other
+INFO:     192.168.48.20:50737 - "GET / HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.20:50756 - "POST /register HTTP/1.1" 303 See Other
+INFO:     192.168.48.20:50756 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.48.20:50767 - "POST /login HTTP/1.1" 400 Bad Request
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     192.168.48.20:50774 - "POST /login HTTP/1.1" 303 See Other
+INFO:     192.168.48.20:50774 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpwcmVkZHlrQGxhbmVkdWNlbnRlci5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MjA0MzE2fQ.h2aTXrlRFshLgOodiETMFK2iBgpIDPLLHu7vr4d3sK0 HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+DEBUG: fetch_video_by_batch_and_date called with batch='batch_04' and date=''
+DEBUG: Starting connection to MongoDB...
+DEBUG: MongoDB connection established.
+DEBUG: Using collection 'batch_04' for batch 'batch_04'
+DEBUG: Collection 'batch_04' found.
+DEBUG: Querying the collection for the file document...
+DEBUG: Found file document: {'_id': ObjectId('67ef87b49974e5e576f5f23e'), 'file_name': 'rtd-xnvd-xzp (2025-04-04 09:12 GMT+5:30)', 'file_id': '1XFDcp8d_k711tyA1pRTQsDyvD2HKgWHS', 'video_id': ObjectId('67ef87a69974e5e576f5effb'), 'upload_datetime': '2025-04-04 12:47:58'}
+DEBUG: File found in GridFS by video_id. Retrieving file...
+DEBUG: File retrieved successfully via video_id.
+DEBUG: Starting transcription process...
+DEBUG: Using safe file name: 1XFDcp8d_k711tyA1pRTQsDyvD2HKgWHS.mp4
+DEBUG: Temporary file path created at: C:\Users\ADMINI~1\AppData\Local\Temp\tmpkq0g7j6l\1XFDcp8d_k711tyA1pRTQsDyvD2HKgWHS.mp4
+DEBUG: Video data written to temporary file.
+DEBUG: Loading Whisper model for transcription...
+DEBUG: Whisper model loaded. Starting transcription...
+DEBUG: Transcription complete.
+DEBUG: Cleaning up temporary files...
+DEBUG: Temporary files removed.
+INFO:     192.168.48.20:50782 - "POST /mentor/fetch_transcript HTTP/1.1" 303 See Other
+INFO:     192.168.48.20:50782 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpwcmVkZHlrQGxhbmVkdWNlbnRlci5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MjA0MzE2fQ.h2aTXrlRFshLgOodiETMFK2iBgpIDPLLHu7vr4d3sK0&success=Transcript%20generated%20and%20saved%20successfully HTTP/1.1" 200 OK
+DEBUG: fetch_video_by_batch_and_date called with batch='batch_04' and date='2025-04-09'
+DEBUG: Starting connection to MongoDB...
+DEBUG: MongoDB connection established.
+DEBUG: Using collection 'batch_04' for batch 'batch_04'
+DEBUG: Collection 'batch_04' found.
+DEBUG: Processing date parameter: 2025-04-09
+DEBUG: Parsed date_start: 2025-04-09 00:00:00, date_end: 2025-04-09 23:59:59
+DEBUG: Built query: {'$or': [{'uploadDate': {'$gte': datetime.datetime(2025, 4, 9, 0, 0), '$lte': datetime.datetime(2025, 4, 9, 23, 59, 59)}}, {'upload_datetime': {'$regex': '^2025-04-09'}}]}
+DEBUG: Querying the collection for the file document...
+ERROR: No video found for batch batch_04 on date 2025-04-09
+INFO:     192.168.48.20:50898 - "POST /mentor/fetch_transcript HTTP/1.1" 303 See Other
+INFO:     192.168.48.20:50898 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpwcmVkZHlrQGxhbmVkdWNlbnRlci5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MjA0MzE2fQ.h2aTXrlRFshLgOodiETMFK2iBgpIDPLLHu7vr4d3sK0&error=No%20video%20found%20for%20batch%20batch_04%20on%20date%202025-04-09 HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+DEBUG: fetch_video_by_batch_and_date called with batch='batch_03' and date='2025-04-09'
+DEBUG: Starting connection to MongoDB...
+DEBUG: MongoDB connection established.
+DEBUG: Using collection 'batch_03' for batch 'batch_03'
+DEBUG: Collection 'batch_03' found.
+DEBUG: Processing date parameter: 2025-04-09
+DEBUG: Parsed date_start: 2025-04-09 00:00:00, date_end: 2025-04-09 23:59:59
+DEBUG: Built query: {'$or': [{'uploadDate': {'$gte': datetime.datetime(2025, 4, 9, 0, 0), '$lte': datetime.datetime(2025, 4, 9, 23, 59, 59)}}, {'upload_datetime': {'$regex': '^2025-04-09'}}]}
+DEBUG: Querying the collection for the file document...
+ERROR: No video found for batch batch_03 on date 2025-04-09
+INFO:     192.168.48.20:50911 - "POST /mentor/fetch_transcript HTTP/1.1" 303 See Other
+INFO:     192.168.48.20:50911 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpwcmVkZHlrQGxhbmVkdWNlbnRlci5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MjA0MzE2fQ.h2aTXrlRFshLgOodiETMFK2iBgpIDPLLHu7vr4d3sK0&error=No%20video%20found%20for%20batch%20batch_03%20on%20date%202025-04-09 HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+DEBUG: fetch_video_by_batch_and_date called with batch='batch_01' and date=''
+DEBUG: Starting connection to MongoDB...
+DEBUG: MongoDB connection established.
+DEBUG: Using collection 'batch_01' for batch 'batch_01'
+DEBUG: Collection 'batch_01' found.
+DEBUG: Querying the collection for the file document...
+DEBUG: Found file document: {'_id': ObjectId('67f3899a383e0a0673353bab'), 'file_name': 'uyb-hhgf-tza (2025-03-28 11:27 GMT+5:30)', 'file_id': '1GEFLJbXPrrId5ibiiMOovMa6hzVjmeiZ', 'source_folder': 'Meet Recordings', 'video_id': ObjectId('67f3898b383e0a0673353950'), 'upload_datetime': '2025-04-07 13:45:22'}
+DEBUG: File found in GridFS by video_id. Retrieving file...
+DEBUG: File retrieved successfully via video_id.
+DEBUG: Starting transcription process...
+DEBUG: Using safe file name: 1GEFLJbXPrrId5ibiiMOovMa6hzVjmeiZ.mp4
+DEBUG: Temporary file path created at: C:\Users\ADMINI~1\AppData\Local\Temp\tmp24n7vxjd\1GEFLJbXPrrId5ibiiMOovMa6hzVjmeiZ.mp4
+DEBUG: Video data written to temporary file.
+DEBUG: Loading Whisper model for transcription...
+DEBUG: Whisper model loaded. Starting transcription...
+DEBUG: Transcription complete.
+DEBUG: Cleaning up temporary files...
+DEBUG: Temporary files removed.
+INFO:     192.168.48.20:50961 - "POST /mentor/fetch_transcript HTTP/1.1" 303 See Other
+INFO:     192.168.48.20:51268 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpwcmVkZHlrQGxhbmVkdWNlbnRlci5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MjA0MzE2fQ.h2aTXrlRFshLgOodiETMFK2iBgpIDPLLHu7vr4d3sK0 HTTP/1.1" 200 OK
+INFO:     192.168.48.20:51410 - "GET /mentor/results?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpwcmVkZHlrQGxhbmVkdWNlbnRlci5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MjA0MzE2fQ.h2aTXrlRFshLgOodiETMFK2iBgpIDPLLHu7vr4d3sK0&batch=b4 HTTP/1.1" 200 OK
+INFO:     192.168.48.20:51451 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpwcmVkZHlrQGxhbmVkdWNlbnRlci5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MjA0MzE2fQ.h2aTXrlRFshLgOodiETMFK2iBgpIDPLLHu7vr4d3sK0 HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+DEBUG: fetch_video_by_batch_and_date called with batch='batch_01' and date='2025-04-09'
+DEBUG: Starting connection to MongoDB...
+DEBUG: MongoDB connection established.
+DEBUG: Using collection 'batch_01' for batch 'batch_01'
+DEBUG: Collection 'batch_01' found.
+DEBUG: Processing date parameter: 2025-04-09
+DEBUG: Parsed date_start: 2025-04-09 00:00:00, date_end: 2025-04-09 23:59:59
+DEBUG: Built query: {'$or': [{'uploadDate': {'$gte': datetime.datetime(2025, 4, 9, 0, 0), '$lte': datetime.datetime(2025, 4, 9, 23, 59, 59)}}, {'upload_datetime': {'$regex': '^2025-04-09'}}]}
+DEBUG: Querying the collection for the file document...
+DEBUG: Found file document: {'_id': ObjectId('67f5eebd8d1512d629217e2e'), 'file_name': 'uyb-hhgf-tza (2025-01-31 11:34 GMT+5:30)', 'file_id': '1X7cG5ysbCrjJjDr3VvOq5A3xn05vbJ3m', 'source_folder': 'SAP BASIS', 'video_id': ObjectId('67f5eebd8d1512d629217e1a'), 'upload_datetime': '2025-04-09 09:21:25'}
+DEBUG: File found in GridFS by video_id. Retrieving file...
+DEBUG: File retrieved successfully via video_id.
+DEBUG: Starting transcription process...
+DEBUG: Using safe file name: 1X7cG5ysbCrjJjDr3VvOq5A3xn05vbJ3m.mp4
+DEBUG: Temporary file path created at: C:\Users\ADMINI~1\AppData\Local\Temp\tmppl9rrp4a\1X7cG5ysbCrjJjDr3VvOq5A3xn05vbJ3m.mp4
+DEBUG: Video data written to temporary file.
+DEBUG: Loading Whisper model for transcription...
+DEBUG: Whisper model loaded. Starting transcription...
+DEBUG: Transcription complete.
+DEBUG: Cleaning up temporary files...
+DEBUG: Temporary files removed.
+INFO:     192.168.48.20:51460 - "POST /mentor/fetch_transcript HTTP/1.1" 303 See Other
+INFO:     192.168.48.20:51460 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpwcmVkZHlrQGxhbmVkdWNlbnRlci5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MjA0MzE2fQ.h2aTXrlRFshLgOodiETMFK2iBgpIDPLLHu7vr4d3sK0&success=Transcript%20generated%20and%20saved%20successfully HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+DEBUG: fetch_video_by_batch_and_date called with batch='batch_02' and date=''
+DEBUG: Starting connection to MongoDB...
+DEBUG: MongoDB connection established.
+DEBUG: Using collection 'batch_02' for batch 'batch_02'
+ERROR: Collection batch_02 not found in MongoDB.
+INFO:     192.168.48.20:51470 - "POST /mentor/fetch_transcript HTTP/1.1" 303 See Other
+INFO:     192.168.48.20:51470 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpwcmVkZHlrQGxhbmVkdWNlbnRlci5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MjA0MzE2fQ.h2aTXrlRFshLgOodiETMFK2iBgpIDPLLHu7vr4d3sK0&error=Collection%20batch_02%20not%20found%20in%20MongoDB. HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+DEBUG: fetch_video_by_batch_and_date called with batch='batch_03' and date='2025-04-09'
+DEBUG: Starting connection to MongoDB...
+DEBUG: MongoDB connection established.
+DEBUG: Using collection 'batch_03' for batch 'batch_03'
+DEBUG: Collection 'batch_03' found.
+DEBUG: Processing date parameter: 2025-04-09
+DEBUG: Parsed date_start: 2025-04-09 00:00:00, date_end: 2025-04-09 23:59:59
+DEBUG: Built query: {'$or': [{'uploadDate': {'$gte': datetime.datetime(2025, 4, 9, 0, 0), '$lte': datetime.datetime(2025, 4, 9, 23, 59, 59)}}, {'upload_datetime': {'$regex': '^2025-04-09'}}]}
+DEBUG: Querying the collection for the file document...
+ERROR: No video found for batch batch_03 on date 2025-04-09
+INFO:     192.168.48.20:51479 - "POST /mentor/fetch_transcript HTTP/1.1" 303 See Other
+INFO:     192.168.48.20:51479 - "GET /mentor/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpwcmVkZHlrQGxhbmVkdWNlbnRlci5jb20iLCJyb2xlIjoibWVudG9yIiwiZXhwIjoxNzQ0MjA0MzE2fQ.h2aTXrlRFshLgOodiETMFK2iBgpIDPLLHu7vr4d3sK0&error=No%20video%20found%20for%20batch%20batch_03%20on%20date%202025-04-09 HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:     35.230.16.213:52208 - "GET / HTTP/1.1" 200 OK
+INFO:     34.145.54.200:43080 - "GET / HTTP/1.1" 200 OK
+INFO:     107.150.117.121:57862 - "GET / HTTP/1.1" 200 OK
+INFO:     107.150.117.121:40464 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     107.150.117.121:40478 - "GET /robots.txt HTTP/1.1" 404 Not Found
+INFO:     107.150.117.121:40488 - "GET /sitemap.xml HTTP/1.1" 404 Not Found
+INFO:     107.150.117.121:45316 - "GET /config.json HTTP/1.1" 404 Not Found
+INFO:     185.242.226.163:45165 - "GET / HTTP/1.1" 200 OK
+INFO:     34.145.54.200:44594 - "GET / HTTP/1.1" 200 OK
+INFO:     20.98.140.180:44988 - "GET /ecp/Current/exporttool/microsoft.exchange.ediscovery.exporttool.application HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "POST /cgi-bin/../../../../../../../../../../bin/sh HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "POST /cgi-bin/%252e%252e/%252e%252e/%252e%252e/%252e%252e/%252e%252e/%252e%252e/%252e%252e/bin/sh HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "POST /hello.world?%ADd+allow_url_include%3d1+%ADd+auto_prepend_file%3dphp://input HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /vendor/phpunit/phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /vendor/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /vendor/phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /vendor/phpunit/phpunit/LICENSE/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /vendor/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /phpunit/phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /lib/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /lib/phpunit/phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /lib/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /lib/phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /lib/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /laravel/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /www/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /ws/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /yii/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /zend/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /ws/ec/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /V2/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /tests/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /test/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /testing/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /api/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /demo/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /cms/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /crm/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /admin/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /backup/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /blog/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /workspace/drupal/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /panel/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /apps/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /app/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /index.php?s=/index/\think\app/invokefunction&function=call_user_func_array&vars[0]=md5&vars[1][]=Hello HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /public/index.php?s=/index/\think\app/invokefunction&function=call_user_func_array&vars[0]=md5&vars[1][]=Hello HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /index.php?lang=../../../../../../../../usr/local/lib/php/pearcmd&+config-create+/&/<?echo(md5("hi"));?>+/tmp/index1.php HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /index.php?lang=../../../../../../../../tmp/index1 HTTP/1.1" 404 Not Found
+INFO:     47.237.125.110:50286 - "GET /containers/json HTTP/1.1" 404 Not Found
+INFO:     138.246.253.24:59606 - "GET /robots.txt HTTP/1.1" 404 Not Found
+INFO:     79.8.247.167:59449 - "GET / HTTP/1.0" 200 OK
+INFO:     20.65.194.57:55334 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:51406 - "GET / HTTP/1.1" 200 OK
+WARNING:  Invalid HTTP request received.
+INFO:     45.148.10.34:51590 - "GET / HTTP/1.1" 200 OK
+INFO:     45.148.10.34:51620 - "GET /config.json HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42448 - "GET /app/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42460 - "GET /docker-compose.prod.yml HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42464 - "GET /.env.development.local HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42480 - "GET /.env.uat HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42482 - "GET /core/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42492 - "GET /.env.production.local HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42504 - "GET /data/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42520 - "GET /settings/.env HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42534 - "GET /.env.testing HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42538 - "GET /static../.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42540 - "GET /dev/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42542 - "GET /.env HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42548 - "GET /.env.default HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42562 - "GET /.env.production HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42566 - "GET /.env.sandbox HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:42580 - "GET /.env.test HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43866 - "GET /src/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43868 - "GET /.env.backup HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43872 - "GET /.env.dev.local HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43880 - "GET /.env.dist HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43892 - "GET /api/.env HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43894 - "GET /api/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43900 - "GET /.env.prod HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43910 - "GET /.env.dev HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43912 - "GET /.env.local HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43920 - "GET /.env.secret HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43922 - "GET /.env.staging.local HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43928 - "GET /project/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43944 - "GET /server/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43950 - "GET /.env.ci HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43962 - "GET /build/.env HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49176 - "GET /.env.preprod HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49188 - "GET /.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49204 - "GET /assets../.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49212 - "GET /backup/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49226 - "GET /config/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49238 - "GET /www/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49242 - "GET /.env.save HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49252 - "GET /config/.env HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49268 - "GET /media../.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49272 - "GET /admin/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49280 - "GET /.aws/credentials HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49296 - "GET /.env.bak HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49298 - "GET /.env.live HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49300 - "GET /media/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49308 - "GET /.env.config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49324 - "GET /configuration/.env HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:49340 - "GET /prod/.env HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:34010 - "GET /.env.template HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:34012 - "GET /public/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:34020 - "GET /cms/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:34036 - "GET /.env_sample HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:34040 - "GET /.env.stage HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:34052 - "GET /files/.git/config HTTP/1.1" 404 Not Found
+INFO:     35.205.211.45:59182 - "GET / HTTP/1.1" 200 OK
+INFO:     170.39.218.2:51462 - "GET / HTTP/1.1" 200 OK
+WARNING:  Invalid HTTP request received.
+INFO:     170.39.218.2:51568 - "GET / HTTP/1.1" 200 OK
+INFO:     170.39.218.2:51584 - "GET /.git/config HTTP/1.1" 404 Not Found
+INFO:     154.81.156.40:43532 - "GET / HTTP/1.1" 200 OK
+INFO:     164.52.0.92:36173 - "GET / HTTP/1.1" 200 OK
+INFO:     164.52.0.92:36173 - "GET / HTTP/1.1" 200 OK
+INFO:     164.52.0.92:36173 - "GET /v1/models HTTP/1.1" 404 Not Found
+INFO:     164.52.0.92:36173 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     164.52.0.92:36173 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     93.123.109.222:60210 - "GET / HTTP/1.1" 200 OK
+INFO:     20.168.0.218:47838 - "GET /owa/auth/logon.aspx HTTP/1.1" 404 Not Found
+INFO:     20.163.15.19:48412 - "GET / HTTP/1.1" 200 OK
+INFO:     45.148.10.34:55854 - "GET / HTTP/1.1" 200 OK
+WARNING:  Invalid HTTP request received.
+INFO:     45.148.10.34:55960 - "GET / HTTP/1.1" 200 OK
+INFO:     45.148.10.34:55962 - "GET /api/.env HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:55978 - "GET /.env.uat HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:55986 - "GET /app/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:55996 - "GET /core/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:56000 - "GET /media../.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:56014 - "GET /dev/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33336 - "GET /.env.testing HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33342 - "GET /.env.prod HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33358 - "GET /.env.production.local HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33368 - "GET /src/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33382 - "GET /.aws/credentials HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33394 - "GET /.env.config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33400 - "GET /.env.sandbox HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33404 - "GET /server/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33410 - "GET /.env.test HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33420 - "GET /.env HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33434 - "GET /.env.default HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33444 - "GET /.env.dev HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33446 - "GET /configuration/.env HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33452 - "GET /settings/.env HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33462 - "GET /.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:33478 - "GET /assets../.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43218 - "GET /static../.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43230 - "GET /config.json HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43236 - "GET /.env.preprod HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43244 - "GET /.env.staging.local HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43254 - "GET /www/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43264 - "GET /docker-compose.prod.yml HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43276 - "GET /.env.ci HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43278 - "GET /.env.stage HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43294 - "GET /media/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43296 - "GET /.env.live HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43302 - "GET /build/.env HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43312 - "GET /backup/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43320 - "GET /.env.secret HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43326 - "GET /api/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43342 - "GET /config/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:43350 - "GET /.env.save HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40500 - "GET /.env.bak HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40528 - "GET /.env.production HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40566 - "GET /cms/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40586 - "GET /files/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40628 - "GET /project/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40656 - "GET /.env.local HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40684 - "GET /public/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40732 - "GET /.env_sample HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40754 - "GET /.env.template HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40782 - "GET /admin/.git/config HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40796 - "GET /.env.backup HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40808 - "GET /.env.development.local HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40844 - "GET /.env.dev.local HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40866 - "GET /.env.dist HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:40894 - "GET /config/.env HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:53992 - "GET /prod/.env HTTP/1.1" 404 Not Found
+INFO:     45.148.10.34:53996 - "GET /data/.git/config HTTP/1.1" 404 Not Found
+INFO:     185.242.226.163:59927 - "GET / HTTP/1.1" 200 OK
+INFO:     20.221.68.98:34766 - "GET /autodiscover/autodiscover.json?@zdi/Powershell HTTP/1.1" 404 Not Found
+INFO:     92.255.57.58:42448 - "GET / HTTP/1.1" 200 OK
+INFO:     92.255.57.58:50326 - "POST /Autodiscover/Autodiscover.xml HTTP/1.1" 404 Not Found
+INFO:     92.255.57.58:53000 - "POST /vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     92.255.57.58:50376 - "GET /vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 Not Found
+INFO:     92.255.57.58:36232 - "GET /?XDEBUG_SESSION_START=phpstorm HTTP/1.1" 200 OK
+INFO:     199.45.154.112:39936 - "GET / HTTP/1.1" 200 OK
+INFO:     199.45.154.112:54608 - "GET / HTTP/1.1" 200 OK
+INFO:     199.45.154.112:54614 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     199.45.154.112:54620 - "PRI %2A HTTP/2.0" 404 Not Found
+WARNING:  Invalid HTTP request received.
+INFO:     199.45.154.112:53376 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     199.45.154.112:53380 - "PRI %2A HTTP/2.0" 404 Not Found
+WARNING:  Invalid HTTP request received.
+INFO:     199.45.155.107:38532 - "GET / HTTP/1.1" 200 OK
+INFO:     199.45.155.107:34752 - "GET / HTTP/1.1" 200 OK
+INFO:     199.45.155.107:34762 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     199.45.155.107:34772 - "PRI %2A HTTP/2.0" 404 Not Found
+WARNING:  Invalid HTTP request received.
+INFO:     199.45.155.107:50972 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     199.45.155.107:50974 - "PRI %2A HTTP/2.0" 404 Not Found
+WARNING:  Invalid HTTP request received.
+INFO:     92.255.57.58:59096 - "GET /console/ HTTP/1.1" 404 Not Found

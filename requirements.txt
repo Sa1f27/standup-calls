@@ -10,3 +10,4 @@ pyjwt
 python-docx
 openai
 pymongo
+pyodbc

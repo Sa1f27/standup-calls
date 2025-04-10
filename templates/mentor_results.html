@@ -431,8 +431,9 @@
             <tr>
               <td class="student-name"> {{ row.name }}</td>
               <td class="student-email">{{ row.student_email }}</td>
-              <td class="answers-cell"><pre>{{ row.results }}</pre></td>
-              <td class="ai-feedback"><pre>{{ row.ai_feedback }}</td>
+              <td class="answers-cell" style="white-space: pre-wrap; font-family: monospace;">{{ row.results }}</td>
+              <td class="ai-feedback" style="white-space: pre-wrap; font-family: monospace;">{{ row.ai_feedback }}</td>
+              
               <td class="date-cell">{{ row.submission_date }}</td>
             </tr>
             {% endfor %}

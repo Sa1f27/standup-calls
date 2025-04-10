@@ -5,7 +5,7 @@ import tempfile
 import gridfs
 from datetime import datetime, timedelta
 from typing import List, Optional
-
+import time
 import jwt
 import pyodbc
 import whisper
@@ -98,14 +98,14 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
 #  SQL Server Connection & DB Setup
 # ==================================================
 DB_CONFIG = {
-    'server': '192.168.48.112',
+    'server': '192.168.48.200',
     'database': 'mentoring_system',
     'username': 'sa',
     'password': 'Welcome@123',
     'driver': '{ODBC Driver 17 for SQL Server}'
 }
 
-def get_db_connection():
+def get_db_connection(retries=5, delay=5):
     conn_str = (
         f"DRIVER={DB_CONFIG['driver']};"
         f"SERVER={DB_CONFIG['server']};"
@@ -113,7 +113,13 @@ def get_db_connection():
         f"UID={DB_CONFIG['username']};"
         f"PWD={DB_CONFIG['password']}"
     )
-    return pyodbc.connect(conn_str)
+    for i in range(retries):
+        try:
+            return pyodbc.connect(conn_str)
+        except pyodbc.OperationalError as e:
+            print(f"SQL connection failed (attempt {i+1}/{retries}). Retrying in {delay}s...")
+            time.sleep(delay)
+    raise Exception("Failed to connect to SQL Server after multiple attempts.")
 
 def setup_database():
     conn = get_db_connection()
@@ -182,7 +188,7 @@ setup_database()
 def get_mongo_connection():
     """Establish connection to MongoDB"""
     print("DEBUG: Starting connection to MongoDB...")
-    client = MongoClient('mongodb://192.168.48.112:27017/')
+    client = MongoClient('mongodb://192.168.48.200:27017/')
     db = client.video_db
     print("DEBUG: MongoDB connection established.")
     return db, gridfs.GridFS(db)
@@ -367,12 +373,28 @@ Transcript:
 # Evaluation using OpenAI
 def evaluate_answers_with_openai(answers_text: str, questions: str) -> str:
     prompt = f"""
-You are an experienced educator grading student answers.
+You are an experienced educator grading student quiz answers.
 
-Instructions:
-- Evaluate each student answer in context of the matching question.
-- Comment on accuracy, completeness, clarity, and reasoning.
-- After evaluating, provide a final score out of 10 and brief overall feedback.
+For each question:
+- Provide the question first.
+- Then put the student’s answer on the next line under "Student Answer:"
+- Then add a detailed evaluation under "Evaluation:"
+- Then provide the ideal response under "Correct Answer:"
+- Make sure each part is clearly separated by line breaks.
+- At the end, include a "Final Score" and "Overall Feedback".
+
+Example format:
+
+Q: [question text]
+
+Student Answer:
+[student answer]
+
+Evaluation:
+[feedback on correctness, completeness, clarity]
+
+Correct Answer:
+[ideal answer]
 
 Questions:
 \"\"\"{questions}\"\"\"
@@ -387,9 +409,10 @@ Student Answers:
             {"role": "user", "content": prompt}
         ],
         temperature=0.7,
-        max_tokens=512
+        max_tokens=2000
     )
     return response.choices[0].message.content.strip()
+
 
 
 # ==================================================
@@ -442,7 +465,7 @@ async def stt_whisper_endpoint(file: UploadFile = File(...)):
 
     text = ""
     try:
-        model = whisper.load_model("tiny")
+        model = whisper.load_model("small")
         result = model.transcribe(temp_path)
         text = result.get("text", "")
     except Exception as e:
